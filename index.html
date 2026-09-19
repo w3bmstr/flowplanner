@@ -939,17 +939,319 @@ body.focus .view { padding-top: 64px; }
   .header-logo { display: grid; }
 }
 
+/* =============================================
+   EMAIL CLIENT — Tier 1 (Offline) + Tier 2 (mailto)
+   ============================================= */
+
+/* Layout */
+.email-g {
+  display: grid; grid-template-columns: 220px 1fr; gap: 14px;
+  height: calc(100dvh - 130px);
+}
+@media (max-width: 860px) {
+  .email-g { grid-template-columns: 1fr; height: auto; gap: 0; }
+  .email-sidebar {
+    display: none; position: fixed; inset: 0; z-index: 800;
+    background: rgba(0,0,0,.45); backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    align-items: flex-end; justify-content: stretch;
+  }
+  .email-sidebar.mob-show { display: flex; }
+  .email-sidebar .email-sidebar-inner {
+    width: 100%; background: var(--surface); border-radius: 20px 20px 0 0;
+    border: 1px solid var(--line); border-bottom: none;
+    padding-bottom: calc(12px + var(--safe-b));
+    box-shadow: var(--shadow-lg);
+    animation: sheetUp .28s cubic-bezier(.22,1,.36,1);
+  }
+}
+@media (min-width: 861px) {
+  .email-sidebar .email-sidebar-inner { display: contents; }
+}
+
+/* Folder sidebar */
+.email-sidebar {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r); box-shadow: var(--shadow);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+@media (min-width: 861px) { .email-sidebar { display: flex !important; } }
+.email-sidebar-h {
+  padding: 12px 14px; border-bottom: 1px solid var(--line);
+  font-size: 12.5px; font-weight: 650; display: flex; align-items: center;
+  justify-content: space-between; gap: 8px;
+}
+/* Mobile sheet handle for folder drawer */
+.email-folder-handle {
+  display: none; width: 40px; height: 4px; background: var(--line-2);
+  border-radius: 2px; margin: 12px auto 4px;
+}
+@media (max-width: 860px) { .email-folder-handle { display: block; } }
+.email-folders { padding: 6px; display: flex; flex-direction: column; gap: 1px; }
+.ef {
+  display: flex; align-items: center; gap: 10px; padding: 9px 10px;
+  border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--text-2);
+  cursor: pointer; transition: var(--ease); width: 100%; text-align: left;
+}
+.ef:hover { background: var(--hover); color: var(--text); }
+.ef.on { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.ef svg { width: 16px; height: 16px; flex-shrink: 0; }
+.ef-badge {
+  margin-left: auto; background: var(--accent); color: #fff;
+  font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px;
+  min-width: 18px; text-align: center;
+}
+.ef-badge.warn { background: var(--warn); }
+
+/* Unread badge on nav item */
+.nav-item .nav-badge {
+  margin-left: auto; background: var(--accent); color: #fff;
+  font-size: 9.5px; font-weight: 700; padding: 1px 5px; border-radius: 8px;
+  line-height: 1.5; display: none;
+}
+.nav-item .nav-badge.on { display: inline-block; }
+.app.rail .nav-item .nav-badge { display: none !important; }
+
+/* Main pane (list + thread) */
+.email-main {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r); box-shadow: var(--shadow);
+  display: flex; flex-direction: column; overflow: hidden;
+  min-height: 0;
+}
+@media (max-width: 860px) {
+  .email-main { border-radius: 0; border-left: none; border-right: none; box-shadow: none; min-height: calc(100dvh - 200px); }
+}
+
+/* Toolbar */
+.email-toolbar {
+  display: flex; align-items: center; gap: 6px; padding: 10px 12px;
+  border-bottom: 1px solid var(--line); flex-shrink: 0; flex-wrap: wrap;
+}
+.email-toolbar-left { display: flex; gap: 6px; align-items: center; flex: 1; min-width: 0; }
+.email-search {
+  flex: 1; min-width: 120px; padding: 7px 11px; border: 1px solid var(--line);
+  border-radius: 8px; background: var(--bg); font-size: 13px; outline: none;
+}
+.email-search:focus { border-color: var(--accent); }
+
+/* Message list */
+.email-list { flex: 1; overflow-y: auto; }
+.em {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px 14px; border-bottom: 1px solid var(--line);
+  cursor: pointer; transition: background .12s ease; position: relative;
+}
+.em:hover { background: var(--hover); }
+.em.unread .em-subject { font-weight: 650; color: var(--text); }
+.em.sel { background: var(--accent-soft); }
+.em-avatar {
+  width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+  display: grid; place-items: center; font-size: 13px; font-weight: 700;
+  color: #fff; background: var(--accent);
+}
+.em-avatar.draft-av { background: var(--warn); }
+.em-avatar.sent-av { background: var(--text-3); }
+.em-body { flex: 1; min-width: 0; }
+.em-from { font-size: 13px; font-weight: 550; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.em-subject { font-size: 13px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.em-preview { font-size: 11.5px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+.em-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.em-date { font-size: 11px; color: var(--text-3); white-space: nowrap; }
+.em-unread-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
+}
+.em-star { font-size: 13px; opacity: .3; transition: opacity .15s; }
+.em-star.on { opacity: 1; color: var(--warn); }
+.em-flags { display: flex; gap: 4px; align-items: center; }
+
+/* Thread viewer */
+.email-thread {
+  display: none; flex-direction: column; height: 100%;
+  overflow: hidden;
+}
+.email-thread.on { display: flex; }
+.email-thread.trash-mode .email-reply-bar,
+.email-thread.trash-mode #thread-reply-all,
+.email-thread.trash-mode #thread-forward,
+.email-thread.trash-mode #thread-task { display: none; }
+/* thread-msg expand toggle */
+.thread-msg.collapsed .thread-body { display: none; }
+.thread-msg-toggle {
+  font-size: 11px; color: var(--accent); cursor: pointer; margin-top: 6px;
+  display: inline-block;
+}
+.email-thread-h {
+  display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+  border-bottom: 1px solid var(--line); flex-shrink: 0; flex-wrap: wrap;
+}
+.email-thread-h h2 { font-size: 14px; font-weight: 650; flex: 1; min-width: 0; letter-spacing: -0.02em; }
+.thread-scroll { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.thread-msg {
+  background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: var(--r-sm); padding: 14px; font-size: 13.5px; line-height: 1.65;
+}
+.thread-msg-h {
+  display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
+}
+.thread-from { font-size: 13px; font-weight: 600; flex: 1; }
+.thread-date { font-size: 11.5px; color: var(--text-3); white-space: nowrap; }
+.thread-to { font-size: 11.5px; color: var(--text-3); margin-bottom: 8px; }
+.thread-body { color: var(--text); white-space: pre-wrap; word-break: break-word; }
+.thread-actions { display: flex; gap: 7px; margin-top: 12px; flex-wrap: wrap; }
+/* thread count chip */
+.thread-count {
+  font-size: 11px; font-weight: 650; color: var(--text-3); background: var(--surface-2);
+  border: 1px solid var(--line); padding: 2px 7px; border-radius: 10px; margin-left: 4px;
+}
+
+/* Quick reply bar */
+.email-reply-bar {
+  border-top: 1px solid var(--line); padding: 10px 14px;
+  display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0;
+}
+.email-reply-bar textarea {
+  flex: 1; padding: 9px 11px; border: 1px solid var(--line);
+  border-radius: 8px; background: var(--bg); font-size: 13px;
+  outline: none; resize: none; min-height: 60px; line-height: 1.5;
+}
+.email-reply-bar textarea:focus { border-color: var(--accent); }
+
+/* Composer modal */
+.compose-modal {
+  position: fixed; bottom: 24px; right: 24px; z-index: 900;
+  width: min(520px, 96vw); background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--r);
+  box-shadow: var(--shadow-lg); display: none; flex-direction: column;
+  overflow: hidden;
+  animation: modalIn .25s cubic-bezier(.22,1,.36,1);
+}
+.compose-modal.on { display: flex; }
+@media (max-width: 860px) {
+  .compose-modal { bottom: calc(var(--nav-h) + var(--safe-b) + 10px); right: 10px; left: 10px; width: auto; }
+}
+.compose-h {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; background: var(--accent-grad); color: #fff; flex-shrink: 0;
+}
+.compose-h span { font-size: 13px; font-weight: 650; }
+.compose-h-btns { display: flex; gap: 4px; }
+.compose-h-btns button {
+  width: 28px; height: 28px; border-radius: 7px; color: rgba(255,255,255,.8);
+  display: grid; place-items: center; transition: background .15s;
+}
+.compose-h-btns button:hover { background: rgba(255,255,255,.18); color: #fff; }
+.compose-h-btns svg { width: 16px; height: 16px; }
+.compose-fields { display: flex; flex-direction: column; flex: 1; }
+.cf {
+  display: flex; align-items: center; border-bottom: 1px solid var(--line);
+  padding: 0 14px;
+}
+.cf label { font-size: 11.5px; font-weight: 600; color: var(--text-3); width: 36px; flex-shrink: 0; }
+.cf input {
+  flex: 1; padding: 9px 6px; border: none; background: transparent;
+  font-size: 13px; outline: none;
+}
+.compose-body {
+  flex: 1; padding: 12px 14px; border: none; background: transparent;
+  font-size: 13.5px; line-height: 1.65; outline: none; resize: none; min-height: 160px;
+}
+.compose-foot {
+  display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+  border-top: 1px solid var(--line); flex-wrap: wrap;
+}
+.compose-foot .send-later-time {
+  font-size: 12px; border: 1px solid var(--line); border-radius: 6px;
+  padding: 5px 8px; background: var(--bg); outline: none; display: none;
+}
+.compose-foot .send-later-time.on { display: block; }
+
+/* Send-later queue chip */
+.sq-chip {
+  display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+  background: var(--warn-soft); border-radius: var(--r-sm); font-size: 12.5px;
+  border: 1px solid transparent; transition: var(--ease);
+}
+.sq-chip:hover { border-color: var(--line); }
+
+/* Empty state */
+.email-empty {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 10px; color: var(--text-3); font-size: 13px;
+  padding: 40px 20px; text-align: center;
+}
+.email-empty svg { width: 40px; height: 40px; opacity: .25; }
+.email-empty strong { display: block; color: var(--text-2); font-size: 14px; margin-bottom: 4px; }
+
+/* Attachments — compose chips + read-only thread chips */
+.compose-attachments {
+  flex-wrap: wrap; gap: 6px; padding: 0 14px 10px;
+}
+.attach-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: 999px; padding: 4px 10px; font-size: 11.5px;
+  color: var(--text-2); text-decoration: none; max-width: 220px;
+}
+.attach-chip em { font-style: normal; color: var(--text-3); margin-left: 2px; white-space: nowrap; }
+.attach-x {
+  margin-left: 2px; color: var(--text-3); font-size: 15px; line-height: 1;
+  cursor: pointer; flex-shrink: 0;
+}
+.attach-x:hover { color: var(--danger, #d64545); }
+.thread-attachments { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.compose-fields.drag-over {
+  outline: 2px dashed var(--accent); outline-offset: -4px; background: var(--accent-soft);
+}
+
+/* Multi-select checkboxes on message rows */
+.em-check { display: none; align-items: center; flex-shrink: 0; padding-top: 2px; }
+#email-list-pane.select-mode .em-check { display: flex; }
+.em-check input { width: 16px; height: 16px; cursor: pointer; accent-color: var(--accent); }
+
+/* Bulk action bar (shown in select mode) */
+.email-bulk-bar {
+  display: none; align-items: center; gap: 8px; padding: 8px 12px;
+  border-bottom: 1px solid var(--line); background: var(--accent-soft);
+  font-size: 12.5px; font-weight: 600; color: var(--text-2); flex-wrap: wrap;
+}
+
+/* Send-later panel */
+.sq-panel {
+  padding: 10px 12px; display: flex; flex-direction: column; gap: 6px;
+  border-top: 1px solid var(--line); flex-shrink: 0;
+}
+.sq-panel-h { font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--text-3); }
+
+/* Mailto badge in settings */
+.mailto-row { display: flex; align-items: center; gap: 10px; }
+.mailto-row label { flex: 1; font-size: 13px; }
+.toggle-pill {
+  width: 38px; height: 22px; border-radius: 11px; background: var(--line-2);
+  position: relative; cursor: pointer; transition: background .2s;
+  flex-shrink: 0;
+}
+.toggle-pill.on { background: var(--accent); }
+.toggle-pill::after {
+  content: ''; position: absolute; top: 3px; left: 3px;
+  width: 16px; height: 16px; border-radius: 50%; background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2); transition: transform .2s;
+}
+.toggle-pill.on::after { transform: translateX(16px); }
+
   </style>
 </head>
 <body>
   <div class="onboard" id="onboard">
     <div class="logo-mark" style="width:52px;height:52px;font-size:24px;border-radius:14px;margin-bottom:22px;">F</div>
     <h1>Your day, in one place</h1>
-    <p>Calendars, to-dos, notes, and habits never talk to each other. FlowPlanner does — offline, private, zero friction.</p>
+    <p>Calendars, to-dos, notes, habits, and email — all offline, private, zero friction.</p>
     <ul class="points">
       <li>One continuous day: time, tasks, and notes together</li>
       <li>Always know what to do next</li>
       <li>Conflicts flagged before they break the afternoon</li>
+      <li>Email inbox with compose, drafts, send-later &amp; mailto</li>
       <li>Data stays on your device. No account needed.</li>
     </ul>
     <div class="onboard-actions">
@@ -985,6 +1287,10 @@ body.focus .view { padding-top: 64px; }
         <button type="button" class="nav-item" data-view="habits" title="Habits">
           <span class="nav-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></span>
           <span>Habits</span> <span class="kbd">5</span>
+        </button>
+        <button type="button" class="nav-item" data-view="email" title="Email">
+          <span class="nav-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></span>
+          <span>Email</span> <span class="kbd">6</span><span class="nav-badge" id="email-nav-badge"></span>
         </button>
       </nav>
       <div class="sidebar-foot">
@@ -1162,6 +1468,110 @@ body.focus .view { padding-top: 64px; }
             <div class="habits" id="habits"></div>
           </div>
         </section>
+
+        <!-- ── EMAIL VIEW ─────────────────────────────────────── -->
+        <section id="email-view" class="view">
+          <div class="email-g">
+            <!-- Folder sidebar -->
+            <div class="email-sidebar" id="email-sidebar">
+              <div class="email-sidebar-inner">
+                <div class="email-folder-handle"></div>
+                <div class="email-sidebar-h">
+                  <span>Mailbox</span>
+                  <button type="button" class="icon-btn" id="compose-btn" title="Compose">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                  </button>
+                </div>
+                <div class="email-folders">
+                  <button class="ef on" data-folder="inbox">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+                    Inbox <span class="ef-badge" id="inbox-badge"></span>
+                  </button>
+                  <button class="ef" data-folder="starred">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                    Starred
+                  </button>
+                  <button class="ef" data-folder="sent">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                    Sent
+                  </button>
+                  <button class="ef" data-folder="drafts">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    Drafts <span class="ef-badge warn" id="drafts-badge"></span>
+                  </button>
+                  <button class="ef" data-folder="scheduled">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Scheduled <span class="ef-badge warn" id="scheduled-badge"></span>
+                  </button>
+                  <button class="ef" data-folder="trash">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    Trash
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Main pane -->
+            <div class="email-main" id="email-main">
+              <!-- List pane (hidden when thread open on mobile) -->
+              <div id="email-list-pane" style="display:flex;flex-direction:column;height:100%;overflow:hidden;">
+                <div class="email-toolbar">
+                  <div class="email-toolbar-left">
+                    <button type="button" class="icon-btn desktop-only" id="email-folders-btn" title="Folders" style="display:none;">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    </button>
+                    <input type="search" class="email-search" id="email-search" placeholder="Search emails…" autocomplete="off" />
+                  </div>
+                  <button type="button" class="icon-btn" id="email-select-btn" title="Select messages" style="flex-shrink:0;">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  </button>
+                  <button type="button" class="icon-btn" id="email-mark-read-btn" title="Mark all read" style="flex-shrink:0;">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                  </button>
+                  <button type="button" class="btn btn-primary" id="compose-btn-2" style="padding:7px 13px;font-size:12.5px;white-space:nowrap;">+ Compose</button>
+                </div>
+                <div class="email-bulk-bar" id="email-bulk-bar" style="display:none;">
+                  <span id="email-bulk-count">0 selected</span>
+                  <button type="button" class="btn" id="bulk-read" style="padding:6px 10px;font-size:12px;">Mark read</button>
+                  <button type="button" class="btn" id="bulk-star" style="padding:6px 10px;font-size:12px;">★ Star</button>
+                  <button type="button" class="btn btn-danger" id="bulk-delete" style="padding:6px 10px;font-size:12px;">Delete</button>
+                  <button type="button" class="btn btn-ghost" id="bulk-cancel" style="padding:6px 10px;font-size:12px;margin-left:auto;">Cancel</button>
+                </div>
+                <div class="email-list" id="email-list"></div>
+              </div>
+
+              <!-- Thread pane -->
+              <div class="email-thread" id="email-thread">
+                <div class="email-thread-h">
+                  <button type="button" class="icon-btn" id="thread-back" title="Back to list">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                  </button>
+                  <h2 id="thread-subject">—</h2><span class="thread-count" id="thread-count" style="display:none;"></span>
+                  <div style="display:flex;gap:6px;flex-shrink:0;">
+                    <button type="button" class="icon-btn" id="thread-star" title="Star">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                    </button>
+                    <button type="button" class="icon-btn" id="thread-reply-all" title="Reply all">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                    </button>
+                    <button type="button" class="icon-btn" id="thread-forward" title="Forward">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </button>
+                    <button type="button" class="icon-btn" id="thread-delete" title="Delete">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
+                    <button type="button" class="btn" id="thread-task" style="padding:6px 10px;font-size:12px;">→ Task</button>
+                  </div>
+                </div>
+                <div class="thread-scroll" id="thread-scroll"></div>
+                <div class="email-reply-bar" id="reply-bar">
+                  <textarea id="reply-body" placeholder="Quick reply…" rows="2"></textarea>
+                  <button type="button" class="btn btn-primary" id="reply-send" style="padding:8px 14px;font-size:12.5px;white-space:nowrap;">Send</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   </div>
@@ -1173,6 +1583,7 @@ body.focus .view { padding-top: 64px; }
       <button type="button" class="mi" data-view="notes"><span class="mi-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></span><span>Notes</span></button>
       <button type="button" class="mi" data-view="calendar"><span class="mi-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></span><span>Cal</span></button>
       <button type="button" class="mi" data-view="habits"><span class="mi-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></span><span>Habits</span></button>
+      <button type="button" class="mi" data-view="email"><span class="mi-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></span><span>Email</span></button>
     </div>
   </nav>
   <button type="button" class="fab" id="fab" aria-label="Add"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.25"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg></button>
@@ -1285,14 +1696,54 @@ body.focus .view { padding-top: 64px; }
           </select>
         </div>
         <div class="fg">
+          <label>Email — "Send via" mode</label>
+          <p style="color:var(--text-3);font-size:12.5px;margin-bottom:10px;">When enabled, Compose uses your device's default mail app (mailto:) instead of the offline inbox.</p>
+          <div class="mailto-row">
+            <label for="set-mailto">Use system mail app (mailto:)</label>
+            <div class="toggle-pill" id="set-mailto" role="switch" aria-checked="false" tabindex="0"></div>
+          </div>
+        </div>
+        <div class="fg">
           <label>Data</label>
           <p style="color:var(--text-3);font-size:12.5px;margin-bottom:8px;">Everything is stored only on this device in localStorage.</p>
-          <button type="button" class="btn" id="set-export-all" style="margin-bottom:8px;width:100%;">Export all data (JSON)</button>
+          <button type="button" class="btn" id="set-export-all" style="margin-bottom:8px;width:100%;">Export all data + email (JSON)</button>
           <button type="button" class="btn btn-danger" id="set-reset" style="width:100%;">Reset app &amp; show onboarding</button>
         </div>
         <p style="color:var(--text-3);font-size:12px;margin-top:8px;">FlowPlanner v3 · Offline · No account · MIT</p>
       </div>
       <div class="modal-f"><button type="button" class="btn btn-primary" id="settings-ok">Done</button></div>
+    </div>
+  </div>
+
+  <!-- Composer (floating, Tier 1 + Tier 2) -->
+  <div class="compose-modal" id="compose-modal">
+    <div class="compose-h">
+      <span id="compose-title">New Message</span>
+      <div class="compose-h-btns">
+        <button type="button" id="compose-min" title="Minimise">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+        </button>
+        <button type="button" id="compose-close" title="Discard">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="compose-fields" id="compose-fields">
+      <div class="cf"><label>To</label><input type="email" id="c-to" placeholder="recipient@example.com" autocomplete="off" multiple list="email-contacts" /></div>
+      <div class="cf"><label>Cc</label><input type="email" id="c-cc" placeholder="" autocomplete="off" multiple list="email-contacts" /></div>
+      <div class="cf"><label>Sub</label><input type="text" id="c-sub" placeholder="Subject" autocomplete="off" /></div>
+      <datalist id="email-contacts"></datalist>
+      <textarea class="compose-body" id="c-body" placeholder="Write your message…"></textarea>
+      <div class="compose-attachments" id="compose-attachments" style="display:none;"></div>
+      <div class="compose-foot">
+        <button type="button" class="btn btn-primary" id="c-send" style="font-size:12.5px;padding:7px 14px;">Send</button>
+        <button type="button" class="btn" id="c-draft" style="font-size:12.5px;padding:7px 12px;">Save draft</button>
+        <button type="button" class="btn" id="c-later-toggle" style="font-size:12.5px;padding:7px 12px;" title="Send later">⏰ Later</button>
+        <input type="datetime-local" id="c-later-time" class="send-later-time" />
+        <button type="button" class="btn" id="c-attach" style="font-size:12.5px;padding:7px 10px;" title="Attach files">📎</button>
+        <input type="file" id="c-attach-input" multiple style="display:none;" />
+        <button type="button" class="btn btn-danger btn-ghost" id="c-discard" style="margin-left:auto;font-size:12.5px;padding:7px 10px;">Discard</button>
+      </div>
     </div>
   </div>
 
@@ -1302,7 +1753,7 @@ body.focus .view { padding-top: 64px; }
 (function () {
   'use strict';
   const KEY = 'flowplanner_v3';
-  const titles = { dashboard: 'Today', tasks: 'Tasks', notes: 'Notes', calendar: 'Calendar', habits: 'Habits' };
+  const titles = { dashboard: 'Today', tasks: 'Tasks', notes: 'Notes', calendar: 'Calendar', habits: 'Habits', email: 'Email' };
 
   function today() {
     const d = new Date();
@@ -1323,6 +1774,869 @@ body.focus .view { padding-top: 64px; }
   }
   function toMin(t) { const [h, m] = t.split(':').map(Number); return h * 60 + m; }
   function nowMin() { const n = new Date(); return n.getHours() * 60 + n.getMinutes(); }
+
+  /* ── EMAIL DATA DEFAULTS ────────────────────────────── */
+  const EMAIL_KEY = 'flowplanner_email_v1';
+  function emailLoad() {
+    try {
+      const r = localStorage.getItem(EMAIL_KEY);
+      if (r) return JSON.parse(r);
+    } catch (e) {}
+    // Seed with sample messages
+    const now = Date.now();
+    return {
+      messages: [
+        {
+          id: 'em1', folder: 'inbox', from: 'Alice Johnson', fromAddr: 'alice@example.com',
+          to: 'me@example.com', cc: '', subject: 'Project kickoff notes',
+          body: 'Hi,\n\nAttaching the notes from our kickoff call. Main action items:\n\n1. Wireframes by Friday\n2. Confirm tech stack\n3. Set up repo\n\nLet me know if you have questions.\n\nAlice',
+          date: now - 1000 * 60 * 45, unread: true, starred: false, threadId: 'th1'
+        },
+        {
+          id: 'em2', folder: 'inbox', from: 'Bob Chen', fromAddr: 'bob@example.com',
+          to: 'me@example.com', cc: '', subject: 'Quick question re: budget',
+          body: 'Hey,\n\nDo you have the updated budget spreadsheet? Need it before the 3pm call.\n\nThanks,\nBob',
+          date: now - 1000 * 60 * 90, unread: true, starred: false, threadId: 'th2'
+        },
+        {
+          id: 'em3', folder: 'inbox', from: 'Carol White', fromAddr: 'carol@example.com',
+          to: 'me@example.com', cc: '', subject: 'Re: Design review feedback',
+          body: 'Looks great overall — just a few tweaks on the hero section. Left comments in Figma.\n\nCarol',
+          date: now - 1000 * 60 * 60 * 3, unread: false, starred: true, threadId: 'th3'
+        },
+        {
+          id: 'em4', folder: 'sent', from: 'Me', fromAddr: 'me@example.com',
+          to: 'alice@example.com', cc: '', subject: 'Re: Project kickoff notes',
+          body: 'Thanks Alice, got it. I\'ll have the wireframes ready by EOD Thursday.',
+          date: now - 1000 * 60 * 30, unread: false, starred: false, threadId: 'th1'
+        },
+        {
+          id: 'em5', folder: 'drafts', from: 'Me', fromAddr: 'me@example.com',
+          to: 'team@example.com', cc: '', subject: 'Weekly update',
+          body: 'Hi team,\n\nThis week we...',
+          date: now - 1000 * 60 * 20, unread: false, starred: false, threadId: 'th5'
+        }
+      ],
+      nextId: 6,
+      useMailto: false
+    };
+  }
+  function emailSave() { localStorage.setItem(EMAIL_KEY, JSON.stringify(emailData)); }
+  let emailData = emailLoad();
+  let emailFolder = 'inbox';
+  let emailActiveId = null;
+  let emailSelectMode = false;
+  let emailSelected = new Set();
+
+  /* ── HELPERS ─────────────────────────────────────────── */
+  function emailUid() { return 'em' + (emailData.nextId++) + '_' + Math.random().toString(36).slice(2, 6); }
+  function fmtEmailDate(ts) {
+    const d = new Date(ts), now2 = new Date();
+    const sameDay = d.toDateString() === now2.toDateString();
+    if (sameDay) return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+  function avatarLetter(name) { return ((name || '?').trim()[0] || '?').toUpperCase(); }
+  function emailReplyTargets(msg) {
+    // Outgoing messages (sent/scheduled) reply back to whoever they were sent to;
+    // incoming messages reply back to the original sender. Keeps quick-reply and
+    // reply-all from ever addressing a reply to yourself.
+    const outgoing = msg.folder === 'sent' || msg.folder === 'scheduled';
+    return outgoing ? { to: msg.to || '', cc: msg.cc || '' } : { to: msg.fromAddr || '', cc: msg.cc || '' };
+  }
+  function dedupeAddrs(str) {
+    const seen = new Set();
+    return str.split(',').map(s => s.trim()).filter(Boolean).filter(a => {
+      const k = a.toLowerCase();
+      if (k === 'me@example.com' || seen.has(k)) return false;
+      seen.add(k); return true;
+    });
+  }
+  function fmtEmailDateFull(ts) {
+    return new Date(ts).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+  }
+  function quoteBlock(msg) {
+    const header = 'On ' + fmtEmailDateFull(msg.date) + ', ' + msg.from + ' <' + msg.fromAddr + '> wrote:';
+    const quoted = (msg.body || '').split('\n').map(l => '> ' + l).join('\n');
+    return header + '\n' + quoted;
+  }
+  function forwardBlock(msg) {
+    return '---------- Forwarded message ----------\n' +
+      'From: ' + msg.from + ' <' + msg.fromAddr + '>\n' +
+      'Date: ' + fmtEmailDateFull(msg.date) + '\n' +
+      'Subject: ' + (msg.subject || '(no subject)') + '\n' +
+      'To: ' + (msg.to || '') + (msg.cc ? '\nCc: ' + msg.cc : '') + '\n\n' +
+      (msg.body || '');
+  }
+  function fmtAttachSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+    return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+  }
+  function attachIcon(type) { return (type || '').startsWith('image/') ? '🖼️' : '📄'; }
+  function avatarClass(folder) {
+    if (folder === 'drafts') return 'draft-av';
+    if (folder === 'sent') return 'sent-av';
+    return '';
+  }
+
+  /* ── BADGE COUNTS ────────────────────────────────────── */
+  function updateEmailBadges() {
+    const msgs = emailData.messages;
+    const unread = msgs.filter(m => m.folder === 'inbox' && m.unread).length;
+    const drafts = msgs.filter(m => m.folder === 'drafts').length;
+    const sched = msgs.filter(m => m.folder === 'scheduled').length;
+    const ibEl = document.getElementById('inbox-badge');
+    const drEl = document.getElementById('drafts-badge');
+    const scEl = document.getElementById('scheduled-badge');
+    if (ibEl) { ibEl.textContent = unread || ''; ibEl.style.display = unread ? 'inline' : 'none'; }
+    if (drEl) { drEl.textContent = drafts || ''; drEl.style.display = drafts ? 'inline' : 'none'; }
+    if (scEl) { scEl.textContent = sched || ''; scEl.style.display = sched ? 'inline' : 'none'; }
+    // Nav badge (sidebar)
+    const nb = document.getElementById('email-nav-badge');
+    if (nb) { nb.textContent = unread || ''; nb.classList.toggle('on', unread > 0); }
+  }
+
+  /* ── MOBILE FOLDER DRAWER ────────────────────────────── */
+  function openFolderDrawer() {
+    const sb = document.getElementById('email-sidebar');
+    if (sb) { sb.classList.add('mob-show'); }
+  }
+  function closeFolderDrawer() {
+    const sb = document.getElementById('email-sidebar');
+    if (sb) sb.classList.remove('mob-show');
+  }
+  // Close when clicking the overlay background
+  const emailSidebarEl = document.getElementById('email-sidebar');
+  if (emailSidebarEl) {
+    emailSidebarEl.addEventListener('click', e => {
+      if (e.target === emailSidebarEl) closeFolderDrawer();
+    });
+    // Handle swipe-down on the handle
+    const handle = emailSidebarEl.querySelector('.email-folder-handle');
+    if (handle) handle.addEventListener('click', closeFolderDrawer);
+  }
+  const emailFoldersBtn = document.getElementById('email-folders-btn');
+  if (emailFoldersBtn) emailFoldersBtn.addEventListener('click', openFolderDrawer);
+
+  /* ── FOLDER RESOLUTION ───────────────────────────────────
+     "Starred" isn't a real folder messages live in — it's a cross-folder
+     view of anything starred. Every folder-scoped list (list render,
+     mark-all-read, J/K navigation) goes through this so Starred actually
+     shows its messages instead of always being empty.                */
+  function emailFolderMsgs(f) {
+    if (f === 'starred') return emailData.messages.filter(m => m.starred && m.folder !== 'trash');
+    return emailData.messages.filter(m => m.folder === f);
+  }
+
+  /* ── FOLDER SWITCH ───────────────────────────────────── */
+  function emailSetFolder(f) {
+    emailFolder = f;
+    emailActiveId = null;
+    emailSelectMode = false;
+    emailSelected.clear();
+    document.querySelectorAll('.ef').forEach(b => b.classList.toggle('on', b.dataset.folder === f));
+    closeFolderDrawer();
+    closeThread();
+    renderEmailList();
+    updateBulkBar();
+  }
+
+  /* ── LIST RENDER ─────────────────────────────────────── */
+  function renderEmailList(query) {
+    const box = document.getElementById('email-list');
+    if (!box) return;
+    let msgs = emailFolderMsgs(emailFolder);
+    if (query) {
+      const q = query.toLowerCase();
+      msgs = msgs.filter(m =>
+        m.subject.toLowerCase().includes(q) ||
+        m.from.toLowerCase().includes(q) ||
+        m.body.toLowerCase().includes(q)
+      );
+    }
+    msgs = msgs.slice().sort((a, b) => b.date - a.date);
+    if (!msgs.length) {
+      box.innerHTML = '<div class="email-empty"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg><strong>' + (query ? 'No results' : 'Empty') + '</strong>' + (query ? 'Try a different search.' : 'Nothing here yet.') + '</div>';
+      return;
+    }
+    document.getElementById('email-list-pane').classList.toggle('select-mode', emailSelectMode);
+    box.innerHTML = msgs.map(m => {
+      const avCls = avatarClass(m.folder);
+      return '<div class="em' + (m.unread ? ' unread' : '') + (m.id === emailActiveId ? ' sel' : '') + '" data-id="' + m.id + '">' +
+        '<label class="em-check" onclick="event.stopPropagation()"><input type="checkbox" class="em-check-in" data-id="' + m.id + '"' + (emailSelected.has(m.id) ? ' checked' : '') + '></label>' +
+        '<div class="em-avatar ' + avCls + '">' + esc(avatarLetter(m.folder === 'sent' || m.folder === 'drafts' ? m.to : m.from)) + '</div>' +
+        '<div class="em-body">' +
+          '<div class="em-from">' + esc(m.folder === 'sent' || m.folder === 'drafts' ? 'To: ' + m.to : m.from) + '</div>' +
+          '<div class="em-subject">' + esc(m.subject || '(no subject)') + '</div>' +
+          '<div class="em-preview">' + esc((m.body || '').replace(/\n/g, ' ').slice(0, 80)) + '</div>' +
+        '</div>' +
+        '<div class="em-meta">' +
+          '<span class="em-date">' + fmtEmailDate(m.date) + '</span>' +
+          '<div class="em-flags">' +
+            (m.unread ? '<span class="em-unread-dot"></span>' : '') +
+            '<span class="em-star' + (m.starred ? ' on' : '') + '" data-id="' + m.id + '">★</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    box.querySelectorAll('.em').forEach(el => {
+      el.addEventListener('click', e => {
+        if (e.target.classList.contains('em-star')) return;
+        if (emailSelectMode) {
+          const cb = el.querySelector('.em-check-in');
+          cb.checked = !cb.checked;
+          cb.dispatchEvent(new Event('change'));
+          return;
+        }
+        openThread(el.dataset.id);
+      });
+    });
+    box.querySelectorAll('.em-star').forEach(el => {
+      el.addEventListener('click', e => {
+        e.stopPropagation();
+        const m = emailData.messages.find(x => x.id === el.dataset.id);
+        if (m) { m.starred = !m.starred; emailSave(); renderEmailList(query); updateEmailBadges(); }
+      });
+    });
+    box.querySelectorAll('.em-check-in').forEach(cb => {
+      cb.addEventListener('change', () => {
+        if (cb.checked) emailSelected.add(cb.dataset.id); else emailSelected.delete(cb.dataset.id);
+        updateBulkBar();
+      });
+    });
+    updateEmailBadges();
+  }
+
+  /* ── MULTI-SELECT & BULK ACTIONS ─────────────────────── */
+  function toggleSelectMode(force) {
+    emailSelectMode = typeof force === 'boolean' ? force : !emailSelectMode;
+    if (!emailSelectMode) emailSelected.clear();
+    renderEmailList();
+    updateBulkBar();
+  }
+  function updateBulkBar() {
+    const bar = document.getElementById('email-bulk-bar');
+    if (!bar) return;
+    bar.style.display = emailSelectMode ? 'flex' : 'none';
+    const countEl = document.getElementById('email-bulk-count');
+    if (countEl) countEl.textContent = emailSelected.size + (emailSelected.size === 1 ? ' selected' : ' selected');
+  }
+  const selectBtn = document.getElementById('email-select-btn');
+  if (selectBtn) selectBtn.addEventListener('click', () => toggleSelectMode());
+  const bulkCancel = document.getElementById('bulk-cancel');
+  if (bulkCancel) bulkCancel.addEventListener('click', () => toggleSelectMode(false));
+  const bulkRead = document.getElementById('bulk-read');
+  if (bulkRead) bulkRead.addEventListener('click', () => {
+    if (!emailSelected.size) return;
+    emailData.messages.forEach(m => { if (emailSelected.has(m.id)) m.unread = false; });
+    emailSave(); updateEmailBadges();
+    toast('Marked read');
+    toggleSelectMode(false);
+  });
+  const bulkStar = document.getElementById('bulk-star');
+  if (bulkStar) bulkStar.addEventListener('click', () => {
+    if (!emailSelected.size) return;
+    emailData.messages.forEach(m => { if (emailSelected.has(m.id)) m.starred = true; });
+    emailSave();
+    toast('Starred');
+    toggleSelectMode(false);
+  });
+  const bulkDelete = document.getElementById('bulk-delete');
+  if (bulkDelete) bulkDelete.addEventListener('click', () => {
+    if (!emailSelected.size) return;
+    const ids = new Set(emailSelected);
+    const snapshot = emailData.messages.filter(m => ids.has(m.id)).map(m => ({ id: m.id, folder: m.folder }));
+    emailData.messages.forEach(m => { if (ids.has(m.id)) m.folder = 'trash'; });
+    emailSave(); updateEmailBadges();
+    toggleSelectMode(false);
+    toast(ids.size + (ids.size === 1 ? ' message' : ' messages') + ' moved to trash', () => {
+      snapshot.forEach(s => { const m = emailData.messages.find(x => x.id === s.id); if (m) m.folder = s.folder; });
+      emailSave(); renderEmailList(); updateEmailBadges();
+    });
+  });
+
+  /* ── THREAD VIEWER ───────────────────────────────────── */
+  function openThread(id) {
+    const msg = emailData.messages.find(m => m.id === id);
+    if (!msg) return;
+    // If it's a draft, open in composer
+    if (msg.folder === 'drafts') { openCompose(msg); return; }
+    emailActiveId = id;
+    if (msg.unread) { msg.unread = false; emailSave(); updateEmailBadges(); }
+    // Collect thread — all messages with same threadId, sorted oldest first.
+    // A message that's itself in Trash must still render even though other
+    // trashed thread-mates are excluded — otherwise opening a trashed email
+    // (from the Trash folder) shows an empty thread body.
+    const thread = emailData.messages
+      .filter(m => m.threadId === msg.threadId && (m.folder !== 'trash' || m.id === msg.id))
+      .sort((a, b) => a.date - b.date);
+    document.getElementById('thread-subject').textContent = msg.subject || '(no subject)';
+    // Thread count chip
+    const tc = document.getElementById('thread-count');
+    if (tc) { tc.textContent = thread.length > 1 ? thread.length : ''; tc.style.display = thread.length > 1 ? 'inline' : 'none'; }
+    const scroll = document.getElementById('thread-scroll');
+    // Collapse all but last message
+    scroll.innerHTML = thread.map((m, idx) => {
+      const isLast = idx === thread.length - 1;
+      return '<div class="thread-msg' + (isLast ? '' : ' collapsed') + '" data-mid="' + m.id + '">' +
+        '<div class="thread-msg-h">' +
+          '<div><div class="thread-from">' + esc(m.from) + ' &lt;' + esc(m.fromAddr) + '&gt;</div>' +
+          '<div class="thread-to">To: ' + esc(m.to) + (m.cc ? ' · Cc: ' + esc(m.cc) : '') + '</div></div>' +
+          '<span class="thread-date">' + fmtEmailDate(m.date) + '</span>' +
+        '</div>' +
+        '<div class="thread-body">' + esc(m.body || '') + '</div>' +
+        ((m.attachments && m.attachments.length) ? '<div class="thread-attachments">' + m.attachments.map(a =>
+          '<a class="attach-chip" href="' + a.dataUrl + '" download="' + esc(a.name) + '">' + attachIcon(a.type) + ' ' + esc(a.name) + ' <em>' + fmtAttachSize(a.size) + '</em></a>'
+        ).join('') + '</div>' : '') +
+        (!isLast ? '<span class="thread-msg-toggle">Show message</span>' : '') +
+      '</div>';
+    }).join('');
+    // Trash is a dead end: hide reply / reply-all / forward so you can't
+    // start composing from something you're about to permanently delete.
+    document.getElementById('email-thread').classList.toggle('trash-mode', msg.folder === 'trash');
+    // Expand/collapse older messages on click
+    scroll.querySelectorAll('.thread-msg-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const msgEl = btn.closest('.thread-msg');
+        const collapsed = msgEl.classList.toggle('collapsed');
+        btn.textContent = collapsed ? 'Show message' : 'Hide message';
+      });
+    });
+    // Star button state
+    const starBtn = document.getElementById('thread-star');
+    starBtn.style.color = msg.starred ? 'var(--warn)' : '';
+    // Show thread, hide list
+    const threadEl = document.getElementById('email-thread');
+    threadEl.classList.add('on');
+    document.getElementById('email-list-pane').style.display = 'none';
+    // Scroll to bottom (latest message)
+    setTimeout(() => { scroll.scrollTop = scroll.scrollHeight; }, 30);
+    // Pre-fill reply
+    document.getElementById('reply-body').value = '';
+    document.getElementById('reply-body').dataset.replyTo = msg.id;
+    renderEmailList();
+  }
+  function closeThread() {
+    emailActiveId = null;
+    document.getElementById('email-thread').classList.remove('on');
+    document.getElementById('email-list-pane').style.display = 'flex';
+  }
+
+  // Thread action buttons
+  document.getElementById('thread-back').addEventListener('click', closeThread);
+  document.getElementById('thread-star').addEventListener('click', () => {
+    const msg = emailData.messages.find(m => m.id === emailActiveId);
+    if (!msg) return;
+    msg.starred = !msg.starred; emailSave(); updateEmailBadges();
+    document.getElementById('thread-star').style.color = msg.starred ? 'var(--warn)' : '';
+    renderEmailList();
+  });
+  document.getElementById('thread-reply-all').addEventListener('click', () => {
+    const msg = emailData.messages.find(m => m.id === emailActiveId);
+    if (!msg) return;
+    const target = emailReplyTargets(msg);
+    const to = dedupeAddrs([target.to, target.cc, msg.cc || ''].filter(Boolean).join(','));
+    openCompose({
+      id: null, to: to.join(', '), cc: '',
+      subject: msg.subject.startsWith('Re: ') ? msg.subject : 'Re: ' + msg.subject,
+      body: '\n\n' + quoteBlock(msg), threadId: msg.threadId
+    }, { focusBody: true });
+  });
+  document.getElementById('thread-forward').addEventListener('click', () => {
+    const msg = emailData.messages.find(m => m.id === emailActiveId);
+    if (!msg) return;
+    openCompose({
+      id: null, to: '', cc: '',
+      subject: msg.subject.startsWith('Fwd: ') ? msg.subject : 'Fwd: ' + msg.subject,
+      body: '\n\n' + forwardBlock(msg),
+      attachments: msg.attachments || []
+    });
+  });
+  document.getElementById('thread-delete').addEventListener('click', () => {
+    const msg = emailData.messages.find(m => m.id === emailActiveId);
+    if (!msg) return;
+    const snapshot = JSON.parse(JSON.stringify(msg));
+    if (msg.folder === 'trash') {
+      // Permanently delete from trash
+      emailData.messages = emailData.messages.filter(m => m.id !== emailActiveId);
+      emailSave(); closeThread(); renderEmailList(); updateEmailBadges();
+      toast('Permanently deleted');
+    } else {
+      msg.folder = 'trash';
+      emailSave(); closeThread(); renderEmailList(); updateEmailBadges();
+      toast('Moved to trash', () => {
+        const existing = emailData.messages.find(m => m.id === snapshot.id);
+        if (existing) existing.folder = snapshot.folder;
+        else emailData.messages.push(snapshot);
+        emailSave(); renderEmailList(); updateEmailBadges();
+      });
+    }
+  });
+  document.getElementById('thread-task').addEventListener('click', () => {
+    const msg = emailData.messages.find(m => m.id === emailActiveId);
+    if (!msg) return;
+    data.tasks.unshift({
+      id: uid(), title: msg.subject || 'Email task',
+      category: 'work', done: false, priority: false, created: Date.now()
+    });
+    save(); dash();
+    if (document.getElementById('tasks-view').classList.contains('active')) tasks();
+    toast('Task created from email');
+  });
+
+  /* ── QUICK REPLY ─────────────────────────────────────── */
+  document.getElementById('reply-send').addEventListener('click', () => {
+    const body = document.getElementById('reply-body').value.trim();
+    if (!body) return;
+    const orig = emailData.messages.find(m => m.id === document.getElementById('reply-body').dataset.replyTo);
+    if (!orig) return;
+    const target = emailReplyTargets(orig);
+    const reply = {
+      id: emailUid(), folder: 'sent',
+      from: 'Me', fromAddr: 'me@example.com',
+      to: target.to, cc: '',
+      subject: (orig.subject.startsWith('Re: ') ? orig.subject : 'Re: ' + orig.subject),
+      body, date: Date.now(), unread: false, starred: false,
+      threadId: orig.threadId
+    };
+    emailData.messages.push(reply); emailSave();
+    document.getElementById('reply-body').value = '';
+    openThread(reply.id);
+    toast('Reply sent (offline)');
+  });
+
+  /* ── COMPOSER ─────────────────────────────────────────── */
+  let composeMinimised = false;
+  let composeDraftId = null;
+  let composeDirty = false;
+  let composeAttachments = [];
+  let composeThreadId = null;
+  let autosaveTimer = null;
+
+  function refreshContactList() {
+    const dl = document.getElementById('email-contacts');
+    if (!dl) return;
+    const seen = new Set();
+    const opts = [];
+    emailData.messages.forEach(m => {
+      (m.fromAddr + ',' + (m.to || '') + ',' + (m.cc || '')).split(',').forEach(raw => {
+        const addr = raw.trim();
+        const k = addr.toLowerCase();
+        if (addr && k !== 'me@example.com' && !seen.has(k)) { seen.add(k); opts.push(addr); }
+      });
+    });
+    dl.innerHTML = opts.map(a => '<option value="' + esc(a) + '"></option>').join('');
+  }
+
+  function renderComposeAttachments() {
+    const wrap = document.getElementById('compose-attachments');
+    if (!wrap) return;
+    if (!composeAttachments.length) { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+    wrap.style.display = 'flex';
+    wrap.innerHTML = composeAttachments.map((a, i) =>
+      '<span class="attach-chip">' + attachIcon(a.type) + ' ' + esc(a.name) + ' <em>' + fmtAttachSize(a.size) + '</em>' +
+      '<button type="button" class="attach-x" data-i="' + i + '" aria-label="Remove attachment">&times;</button></span>'
+    ).join('');
+    wrap.querySelectorAll('.attach-x').forEach(btn => btn.addEventListener('click', e => {
+      e.stopPropagation();
+      composeAttachments.splice(+btn.dataset.i, 1);
+      renderComposeAttachments();
+      composeDirty = true;
+      clearTimeout(autosaveTimer);
+      autosaveTimer = setTimeout(() => saveDraftFields({ manual: false }), 500);
+    }));
+  }
+
+  function openCompose(draftMsg, opts) {
+    opts = opts || {};
+    composeDraftId = draftMsg ? draftMsg.id : null;
+    composeDirty = false;
+    composeThreadId = (draftMsg && draftMsg.threadId) || null;
+    composeAttachments = (draftMsg && draftMsg.attachments) ? draftMsg.attachments.slice() : [];
+    renderComposeAttachments();
+    refreshContactList();
+    document.getElementById('c-to').value = draftMsg ? (draftMsg.to || '') : '';
+    document.getElementById('c-cc').value = draftMsg ? (draftMsg.cc || '') : '';
+    document.getElementById('c-sub').value = draftMsg ? (draftMsg.subject || '') : '';
+    const bodyEl = document.getElementById('c-body');
+    bodyEl.value = draftMsg ? (draftMsg.body || '') : '';
+    document.getElementById('c-later-time').classList.remove('on');
+    document.getElementById('c-later-time').value = '';
+    document.getElementById('compose-title').textContent = draftMsg ? 'Edit Draft' : 'New Message';
+    composeMinimised = false;
+    document.getElementById('compose-fields').style.display = 'flex';
+    document.getElementById('compose-modal').classList.add('on');
+    setTimeout(() => {
+      // Reply-all pre-fills "To" with quoted text below — put the caret at
+      // the top so a reply is typed above the quote, not lost after it.
+      if (opts.focusBody) { bodyEl.focus(); bodyEl.setSelectionRange(0, 0); bodyEl.scrollTop = 0; }
+      else document.getElementById('c-to').focus();
+    }, 40);
+  }
+  function closeCompose() {
+    document.getElementById('compose-modal').classList.remove('on');
+    composeDraftId = null;
+  }
+  function closeComposeAndPreserve() {
+    // Closing (✕ or Esc) used to silently discard whatever was typed. Now
+    // anything the person actually wrote gets kept as a draft first.
+    const modal = document.getElementById('compose-modal');
+    if (!modal.classList.contains('on')) return;
+    clearTimeout(autosaveTimer);
+    let saved = false;
+    if (composeDirty || composeDraftId) saved = saveDraftFields({ manual: false });
+    closeCompose();
+    if (saved) toast('Saved to Drafts');
+  }
+  document.getElementById('compose-min').addEventListener('click', () => {
+    composeMinimised = !composeMinimised;
+    document.getElementById('compose-fields').style.display = composeMinimised ? 'none' : 'flex';
+  });
+  document.getElementById('compose-close').addEventListener('click', closeComposeAndPreserve);
+  document.getElementById('c-discard').addEventListener('click', () => {
+    if (composeDraftId) {
+      emailData.messages = emailData.messages.filter(m => m.id !== composeDraftId);
+      emailSave(); updateEmailBadges();
+      if (document.getElementById('email-view').classList.contains('active')) renderEmailList();
+    }
+    composeDirty = false;
+    closeCompose();
+    toast('Discarded');
+  });
+
+  /* ── ATTACHMENTS ──────────────────────────────────────── */
+  const MAX_ATTACH_SIZE = 5 * 1024 * 1024; // 5MB/file — kept sane for localStorage
+  function handleAttachFiles(fileList) {
+    const files = Array.from(fileList || []);
+    if (!files.length) return;
+    let pending = files.length, rejected = 0;
+    const done = () => {
+      renderComposeAttachments();
+      composeDirty = true;
+      clearTimeout(autosaveTimer);
+      autosaveTimer = setTimeout(() => saveDraftFields({ manual: false }), 400);
+      if (rejected) toast(rejected + ' file' + (rejected > 1 ? 's' : '') + ' skipped (over 5MB)');
+    };
+    files.forEach(f => {
+      if (f.size > MAX_ATTACH_SIZE) { rejected++; if (!--pending) done(); return; }
+      const reader = new FileReader();
+      reader.onload = () => { composeAttachments.push({ name: f.name, size: f.size, type: f.type, dataUrl: reader.result }); if (!--pending) done(); };
+      reader.onerror = () => { rejected++; if (!--pending) done(); };
+      reader.readAsDataURL(f);
+    });
+  }
+  const attachBtn = document.getElementById('c-attach');
+  const attachInput = document.getElementById('c-attach-input');
+  if (attachBtn && attachInput) {
+    attachBtn.addEventListener('click', () => attachInput.click());
+    attachInput.addEventListener('change', e => { handleAttachFiles(e.target.files); e.target.value = ''; });
+  }
+  const composeFieldsEl = document.getElementById('compose-fields');
+  if (composeFieldsEl) {
+    composeFieldsEl.addEventListener('dragover', e => { e.preventDefault(); composeFieldsEl.classList.add('drag-over'); });
+    composeFieldsEl.addEventListener('dragleave', () => composeFieldsEl.classList.remove('drag-over'));
+    composeFieldsEl.addEventListener('drop', e => {
+      e.preventDefault();
+      composeFieldsEl.classList.remove('drag-over');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) handleAttachFiles(e.dataTransfer.files);
+    });
+  }
+
+  // Send-later toggle
+  document.getElementById('c-later-toggle').addEventListener('click', () => {
+    const inp = document.getElementById('c-later-time');
+    inp.classList.toggle('on');
+    if (inp.classList.contains('on')) {
+      // Default to 1 hour from now
+      const d = new Date(Date.now() + 3600000);
+      d.setSeconds(0, 0);
+      inp.value = d.toISOString().slice(0, 16);
+      inp.focus();
+    }
+  });
+
+  // Save draft — used by the explicit button, by autosave-while-typing,
+  // and by closeComposeAndPreserve() so closing the composer never loses work.
+  function saveDraftFields(opts) {
+    opts = opts || {};
+    const to = document.getElementById('c-to').value.trim();
+    const cc = document.getElementById('c-cc').value.trim();
+    const sub = document.getElementById('c-sub').value.trim();
+    const body2 = document.getElementById('c-body').value;
+    if (!sub && !body2 && !to && !cc && !composeAttachments.length) {
+      if (opts.manual) toast('Nothing to save');
+      return false;
+    }
+    if (composeDraftId) {
+      const d = emailData.messages.find(m => m.id === composeDraftId);
+      if (d) { d.to = to; d.cc = cc; d.subject = sub; d.body = body2; d.date = Date.now(); d.attachments = composeAttachments.slice(); }
+    } else {
+      const draft = {
+        id: emailUid(), folder: 'drafts',
+        from: 'Me', fromAddr: 'me@example.com',
+        to, cc, subject: sub, body: body2, attachments: composeAttachments.slice(),
+        date: Date.now(), unread: false, starred: false, threadId: composeThreadId || emailUid()
+      };
+      emailData.messages.push(draft);
+      composeDraftId = draft.id;
+    }
+    emailSave(); updateEmailBadges();
+    if (document.getElementById('email-view').classList.contains('active')) renderEmailList();
+    if (opts.manual) toast('Draft saved');
+    return true;
+  }
+  document.getElementById('c-draft').addEventListener('click', () => saveDraftFields({ manual: true }));
+  ['c-to', 'c-cc', 'c-sub', 'c-body'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      composeDirty = true;
+      clearTimeout(autosaveTimer);
+      autosaveTimer = setTimeout(() => saveDraftFields({ manual: false }), 800);
+    });
+  });
+
+  // Send-in-flight holds, so a send can still be undone briefly — same
+  // pattern as the trash undo window. The message is written to storage
+  // right away in a transient 'sending' folder so a reload mid-window
+  // doesn't lose it; scheduleSendFinalize() just flips it to 'sent' later.
+  const pendingSends = {};
+  function scheduleSendFinalize(id, delay) {
+    pendingSends[id] = setTimeout(() => {
+      const m = emailData.messages.find(x => x.id === id);
+      delete pendingSends[id];
+      if (!m) return;
+      m.folder = 'sent'; delete m.pendingUntil;
+      emailSave(); updateEmailBadges();
+      if (document.getElementById('email-view').classList.contains('active') && emailFolder === 'sent') renderEmailList();
+    }, delay);
+  }
+  (function resumePendingSends() {
+    let changed = false;
+    emailData.messages.forEach(m => {
+      if (m.folder !== 'sending') return;
+      const remaining = (m.pendingUntil || 0) - Date.now();
+      if (remaining <= 0) { m.folder = 'sent'; delete m.pendingUntil; changed = true; }
+      else scheduleSendFinalize(m.id, remaining);
+    });
+    if (changed) emailSave();
+  })();
+
+  // Send (offline store OR mailto)
+  document.getElementById('c-send').addEventListener('click', () => {
+    const to = document.getElementById('c-to').value.trim();
+    const cc = document.getElementById('c-cc').value.trim();
+    const sub = document.getElementById('c-sub').value.trim() || '(no subject)';
+    const body2 = document.getElementById('c-body').value;
+    if (!to) { document.getElementById('c-to').focus(); toast('Add a recipient first'); return; }
+    const laterInp = document.getElementById('c-later-time');
+    const sendAt = laterInp.classList.contains('on') && laterInp.value ? new Date(laterInp.value).getTime() : null;
+    const attachments = composeAttachments.slice();
+    const threadId = composeThreadId || emailUid();
+
+    if (emailData.useMailto) {
+      // ── Tier 2: mailto: fallback (attachments can't travel through mailto:) ──
+      const params = new URLSearchParams();
+      if (cc) params.set('cc', cc);
+      params.set('subject', sub);
+      params.set('body', body2);
+      const href = 'mailto:' + encodeURIComponent(to) + '?' + params.toString().replace(/\+/g, '%20');
+      window.location.href = href;
+      if (composeDraftId) { emailData.messages = emailData.messages.filter(m => m.id !== composeDraftId); emailSave(); }
+      closeCompose();
+      toast('Opened in your mail app');
+      return;
+    }
+
+    if (composeDraftId) { emailData.messages = emailData.messages.filter(m => m.id !== composeDraftId); emailSave(); }
+
+    if (sendAt && sendAt > Date.now()) {
+      // ── Send-later queue ──────────────────────────────
+      const scheduled = {
+        id: emailUid(), folder: 'scheduled',
+        from: 'Me', fromAddr: 'me@example.com',
+        to, cc, subject: sub, body: body2, attachments,
+        date: Date.now(), sendAt, unread: false, starred: false, threadId
+      };
+      emailData.messages.push(scheduled); emailSave(); updateEmailBadges();
+      closeCompose();
+      if (document.getElementById('email-view').classList.contains('active')) renderEmailList();
+      toast('Scheduled for ' + new Date(sendAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }));
+      return;
+    }
+
+    // ── Offline send, with a short undo window before it's final ──────
+    const sent = {
+      id: emailUid(), folder: 'sending', pendingUntil: Date.now() + 4500,
+      from: 'Me', fromAddr: 'me@example.com',
+      to, cc, subject: sub, body: body2, attachments,
+      date: Date.now(), unread: false, starred: false, threadId
+    };
+    emailData.messages.push(sent); emailSave(); updateEmailBadges();
+    closeCompose();
+    scheduleSendFinalize(sent.id, 4500);
+    toast('Sending…', () => {
+      clearTimeout(pendingSends[sent.id]);
+      delete pendingSends[sent.id];
+      emailData.messages = emailData.messages.filter(m => m.id !== sent.id);
+      emailSave(); updateEmailBadges();
+      openCompose({ id: null, to, cc, subject: sub, body: body2, attachments, threadId });
+    });
+  });
+
+  /* ── COMPOSE BUTTONS (HTML) ───────────────────────────── */
+  function wireComposeButtons() {
+    const b1 = document.getElementById('compose-btn');
+    const b2 = document.getElementById('compose-btn-2');
+    if (b1) b1.addEventListener('click', () => openCompose());
+    if (b2) b2.addEventListener('click', () => openCompose());
+  }
+  wireComposeButtons();
+
+  /* ── MARK ALL READ ────────────────────────────────────── */
+  const markReadBtn = document.getElementById('email-mark-read-btn');
+  if (markReadBtn) {
+    markReadBtn.addEventListener('click', () => {
+      let changed = false;
+      emailFolderMsgs(emailFolder).filter(m => m.unread).forEach(m => { m.unread = false; changed = true; });
+      if (changed) { emailSave(); renderEmailList(); updateEmailBadges(); toast('Marked all as read'); }
+      else toast('No unread messages here');
+    });
+  }
+
+  /* ── EMPTY TRASH ─────────────────────────────────────── */
+  // Wired via folder context: when Trash is active, Delete in thread permanently removes.
+  // Also provide a bulk empty from the folder header (added dynamically below).
+
+  /* ── FOLDER BUTTONS ───────────────────────────────────── */
+  document.querySelectorAll('.ef').forEach(b => {
+    b.addEventListener('click', () => {
+      emailSetFolder(b.dataset.folder);
+      // Show "Empty trash" toast option when entering Trash
+      if (b.dataset.folder === 'trash') {
+        const trashMsgs = emailData.messages.filter(m => m.folder === 'trash');
+        if (trashMsgs.length) {
+          toast('Trash · ' + trashMsgs.length + ' item' + (trashMsgs.length > 1 ? 's' : ''), () => {
+            emailData.messages = emailData.messages.filter(m => m.folder !== 'trash');
+            emailSave(); renderEmailList(); updateEmailBadges(); toast('Trash emptied');
+          });
+        }
+      }
+    });
+  });
+
+  /* ── EMAIL SEARCH ─────────────────────────────────────── */
+  const emailSearchIn = document.getElementById('email-search');
+  if (emailSearchIn) {
+    emailSearchIn.addEventListener('input', () => renderEmailList(emailSearchIn.value.trim() || undefined));
+  }
+
+  /* ── SEND-LATER TICK (check every minute) ──────────────── */
+  function checkScheduled() {
+    const now2 = Date.now();
+    let changed = false;
+    emailData.messages.forEach(m => {
+      if (m.folder === 'scheduled' && m.sendAt && m.sendAt <= now2) {
+        m.folder = 'sent'; delete m.sendAt; changed = true;
+      }
+    });
+    if (changed) {
+      emailSave(); updateEmailBadges();
+      if (document.getElementById('email-view').classList.contains('active')) renderEmailList();
+      toast('Scheduled email sent');
+    }
+  }
+  setInterval(checkScheduled, 60000);
+  checkScheduled();
+
+  /* ── EMAIL KEYBOARD NAVIGATION (J/K/R/E/U) ──────────────
+     J = next message, K = prev, R = reply, E = archive/mark-read,
+     U = mark unread — only when email view active & not typing  */
+  let emailListMsgs = [];
+  let emailListIdx = -1;
+  function emailKeyNav(key) {
+    const isEmailView = document.getElementById('email-view').classList.contains('active');
+    if (!isEmailView) return false;
+    const threadOpen = document.getElementById('email-thread').classList.contains('on');
+    if (key === 'j' || key === 'J') {
+      if (threadOpen) {
+        // Navigate to next message in folder
+        const sorted = emailFolderMsgs(emailFolder).sort((a, b) => b.date - a.date);
+        const idx = sorted.findIndex(m => m.id === emailActiveId);
+        if (idx < sorted.length - 1) openThread(sorted[idx + 1].id);
+      }
+      return true;
+    }
+    if (key === 'k' || key === 'K') {
+      if (threadOpen) {
+        const sorted = emailFolderMsgs(emailFolder).sort((a, b) => b.date - a.date);
+        const idx = sorted.findIndex(m => m.id === emailActiveId);
+        if (idx > 0) openThread(sorted[idx - 1].id);
+      }
+      return true;
+    }
+    if ((key === 'r' || key === 'R') && threadOpen) {
+      document.getElementById('reply-body').focus();
+      return true;
+    }
+    if ((key === 'e' || key === 'E') && threadOpen) {
+      // Archive = move to sent if inbox, else mark read
+      const msg = emailData.messages.find(m => m.id === emailActiveId);
+      if (msg && msg.folder === 'inbox') { msg.unread = false; emailSave(); updateEmailBadges(); renderEmailList(); closeThread(); toast('Marked read'); }
+      return true;
+    }
+    if ((key === 'u' || key === 'U') && threadOpen) {
+      const msg = emailData.messages.find(m => m.id === emailActiveId);
+      if (msg) { msg.unread = true; emailSave(); updateEmailBadges(); closeThread(); toast('Marked unread'); }
+      return true;
+    }
+    return false;
+  }
+
+  /* ── MAIN EMAIL VIEW RENDER ───────────────────────────── */
+  function emailView() {
+    sub('email');
+    // Show folders button on mobile toolbar
+    const fb = document.getElementById('email-folders-btn');
+    if (fb) fb.style.display = window.innerWidth <= 860 ? 'grid' : 'none';
+    emailSetFolder(emailFolder);
+    updateEmailBadges();
+    // Sync mailto toggle with settings
+    const pill = document.getElementById('set-mailto');
+    if (pill) pill.classList.toggle('on', !!emailData.useMailto);
+  }
+
+  /* ── MODULE LOADER SYSTEM (Tier 3/4 plug-in manifest) ──── */
+  // A lightweight manifest-driven loader. Tier 3 & 4 plug-ins drop a
+  // <script data-fp-plugin="..."> tag (or call window.FPPlugins.register)
+  // to extend the email adapter. No plug-in loaded yet — stubs only.
+  window.FPPlugins = (function () {
+    const registry = {};
+    function register(name, adapter) {
+      if (registry[name]) return;
+      registry[name] = adapter;
+      // Surface a new folder button + inject into compose/list
+      if (typeof adapter.onLoad === 'function') adapter.onLoad({ emailData, emailSave, renderEmailList, openCompose, toast, data, save });
+      console.log('[FlowPlanner] Plugin loaded:', name);
+    }
+    function get(name) { return registry[name] || null; }
+    function list() { return Object.keys(registry); }
+    return { register, get, list };
+  })();
+
+  /* ── SETTINGS: mailto toggle ──────────────────────────── */
+  const mailtoToggle = document.getElementById('set-mailto');
+  if (mailtoToggle) {
+    mailtoToggle.setAttribute('aria-checked', emailData.useMailto ? 'true' : 'false');
+    mailtoToggle.classList.toggle('on', !!emailData.useMailto);
+    mailtoToggle.addEventListener('click', () => {
+      emailData.useMailto = !emailData.useMailto;
+      mailtoToggle.classList.toggle('on', emailData.useMailto);
+      mailtoToggle.setAttribute('aria-checked', emailData.useMailto ? 'true' : 'false');
+      emailSave();
+      toast(emailData.useMailto ? 'Compose will open your mail app' : 'Using offline inbox');
+    });
+    mailtoToggle.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); mailtoToggle.click(); } });
+  }
 
   const defaults = {
     tasks: [
@@ -1426,6 +2740,7 @@ body.focus .view { padding-top: 64px; }
     if (v === 'notes') notes();
     if (v === 'calendar') cal();
     if (v === 'habits') habits();
+    if (v === 'email') emailView();
   }
   function sub(v) {
     const el = document.getElementById('view-sub');
@@ -1436,6 +2751,7 @@ body.focus .view { padding-top: 64px; }
     } else if (v === 'tasks') el.textContent = 'Capture and finish';
     else if (v === 'notes') el.textContent = 'Ideas without friction';
     else if (v === 'calendar') el.textContent = 'Month at a glance';
+    else if (v === 'email') el.textContent = 'Offline inbox · send-later · mailto';
     else el.textContent = 'Consistency compounds';
   }
   document.querySelectorAll('.nav-item, .mi').forEach(b => {
@@ -2073,15 +3389,6 @@ body.focus .view { padding-top: 64px; }
   document.getElementById('set-theme').addEventListener('change', e => {
     data.theme = e.target.value; theme(); save();
   });
-  document.getElementById('set-export-all').addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'flowplanner-backup-' + today() + '.json';
-    a.click();
-    URL.revokeObjectURL(a.href);
-    toast('Full backup exported');
-  });
   document.getElementById('set-reset').addEventListener('click', () => {
     if (!confirm('Reset all data and show onboarding again? This cannot be undone.')) return;
     localStorage.removeItem(KEY);
@@ -2107,6 +3414,7 @@ body.focus .view { padding-top: 64px; }
     const hd = data.habits.filter(h => h.doneToday).length;
     const ev = data.events.filter(e => e.date === today());
     const cf = conflicts(today());
+    const unreadEmail = emailData.messages.filter(m => m.folder === 'inbox' && m.unread).length;
     let h = '<p><strong>' + fmtDate(today()) + '</strong></p>';
     h += '<p>Completed: <strong>' + done.length + '</strong> · Open: <strong>' + open.length + '</strong></p>';
     if (open.filter(t => t.priority).length) {
@@ -2116,10 +3424,11 @@ body.focus .view { padding-top: 64px; }
     }
     h += '<p>Habits: <strong>' + hd + ' / ' + data.habits.length + '</strong></p>';
     h += '<p>Timeline events: <strong>' + ev.length + '</strong></p>';
+    h += unreadEmail ? '<p>Unread email: <strong>' + unreadEmail + '</strong></p>' : '';
     h += cf.length
       ? '<p style="color:var(--warn)">⚠ ' + cf.length + ' conflict(s)</p>'
       : '<p style="color:var(--accent)">Timeline clear</p>';
-    h += '<p style="margin-top:12px;color:var(--text-3);font-size:12.5px">One system for time, tasks, notes, and habits — so your day is readable instead of scattered.</p>';
+    h += '<p style="margin-top:12px;color:var(--text-3);font-size:12.5px">One system for time, tasks, notes, habits, and email — so your day is readable instead of scattered.</p>';
     document.getElementById('sum-body').innerHTML = h;
     document.getElementById('sum-modal').classList.remove('hidden');
   }
@@ -2139,6 +3448,12 @@ body.focus .view { padding-top: 64px; }
     data.habits.forEach(h => { t += '  [' + (h.doneToday ? 'x' : ' ') + '] ' + h.name + ' (streak ' + h.streak + ')\n'; });
     t += '\nNOTES\n';
     data.notes.slice(0, 5).forEach(n => { t += '  · ' + (n.title || 'Untitled') + '\n'; });
+    // Email section — inbox unread
+    const inbox = emailData.messages.filter(m => m.folder === 'inbox').sort((a, b) => b.date - a.date);
+    if (inbox.length) {
+      t += '\nEMAIL INBOX (' + inbox.filter(m => m.unread).length + ' unread)\n';
+      inbox.slice(0, 10).forEach(m => { t += '  [' + (m.unread ? 'U' : ' ') + '] ' + m.from + ' — ' + m.subject + '\n'; });
+    }
     const blob = new Blob([t], { type: 'text/plain' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -2148,9 +3463,26 @@ body.focus .view { padding-top: 64px; }
     toast('Exported');
   });
 
+  // Settings: export all — include email data
+  document.getElementById('set-export-all').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify({ planner: data, email: emailData }, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'flowplanner-backup-' + today() + '.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('Full backup exported (planner + email)');
+  });
+
   document.getElementById('theme-btn').addEventListener('click', () => {
     data.theme = data.theme === 'light' ? 'dark' : 'light';
     theme(); save();
+  });
+
+  // Resize: show/hide mobile folders button on email view
+  window.addEventListener('resize', () => {
+    const fb = document.getElementById('email-folders-btn');
+    if (fb) fb.style.display = window.innerWidth <= 860 ? 'grid' : 'none';
   });
 
   const modal = document.getElementById('modal');
@@ -2327,8 +3659,13 @@ body.focus .view { padding-top: 64px; }
     data.tasks.forEach(t => { if (t.title.toLowerCase().includes(q)) hits.push({ type: 'task', title: t.title, id: t.id }); });
     data.notes.forEach(n => { if ((n.title + n.content).toLowerCase().includes(q)) hits.push({ type: 'note', title: n.title || 'Untitled', id: n.id }); });
     data.events.forEach(e => { if (e.title.toLowerCase().includes(q)) hits.push({ type: 'event', title: e.title + ' · ' + fmtTime(e.time), id: e.id }); });
+    // Email — search across all non-trash messages
+    emailData.messages.filter(m => m.folder !== 'trash').forEach(m => {
+      if ((m.subject + m.from + m.body).toLowerCase().includes(q))
+        hits.push({ type: 'email', title: m.from + ' — ' + (m.subject || '(no subject)'), id: m.id });
+    });
     if (!hits.length) { searchRes.innerHTML = '<div class="sr-item">No results</div>'; searchRes.classList.add('on'); return; }
-    searchRes.innerHTML = hits.slice(0, 12).map(h =>
+    searchRes.innerHTML = hits.slice(0, 14).map(h =>
       '<div class="sr-item" data-type="' + h.type + '" data-id="' + h.id + '"><span class="sr-type">' + h.type + '</span>' + esc(h.title) + '</div>'
     ).join('');
     searchRes.classList.add('on');
@@ -2337,6 +3674,7 @@ body.focus .view { padding-top: 64px; }
       if (ty === 'task') go('tasks');
       else if (ty === 'note') { data.noteId = id; save(); go('notes'); }
       else if (ty === 'event') go('dashboard');
+      else if (ty === 'email') { go('email'); setTimeout(() => openThread(id), 60); }
       searchBar.classList.remove('on'); searchIn.value = ''; searchRes.classList.remove('on');
     }));
   });
@@ -2347,6 +3685,9 @@ body.focus .view { padding-top: 64px; }
     { label: 'Go to Notes', k: '3', run: () => go('notes') },
     { label: 'Go to Calendar', k: '4', run: () => go('calendar') },
     { label: 'Go to Habits', k: '5', run: () => go('habits') },
+    { label: 'Go to Email', k: '6', run: () => go('email') },
+    { label: 'Compose email', k: 'M', run: () => { go('email'); setTimeout(openCompose, 60); } },
+    { label: 'Mark all email read', k: '', run: () => { emailData.messages.filter(m => m.folder === 'inbox').forEach(m => { m.unread = false; }); emailSave(); updateEmailBadges(); renderEmailList(); toast('All inbox read'); } },
     { label: 'Add task', k: 'N', run: () => openModal('task') },
     { label: 'Add time block', k: '', run: () => openModal('event') },
     { label: 'Add note', k: '', run: () => openModal('note') },
@@ -2404,6 +3745,8 @@ body.focus .view { padding-top: 64px; }
       closeSettings();
       closeCmd();
       closeMore();
+      closeFolderDrawer();
+      closeCompose();
       document.body.classList.remove('focus');
       if (document.body.classList.contains('is-fs') && !document.fullscreenElement) {
         document.body.classList.remove('is-fs');
@@ -2412,14 +3755,18 @@ body.focus .view { padding-top: 64px; }
       return;
     }
     if (typing) return;
+    // Email keyboard nav (J/K/R/E/U) — consumed before global shortcuts
+    if (emailKeyNav(e.key)) return;
     if (e.key === '1') go('dashboard');
     if (e.key === '2') go('tasks');
     if (e.key === '3') go('notes');
     if (e.key === '4') go('calendar');
     if (e.key === '5') go('habits');
+    if (e.key === '6') go('email');
     if (e.key === 'n' || e.key === 'N') openModal('task');
     if (e.key === 'f' || e.key === 'F') document.body.classList.add('focus');
     if (e.key === 'p' || e.key === 'P') planDay();
+    if (e.key === 'm' || e.key === 'M') { if (document.getElementById('email-view').classList.contains('active')) openCompose(); }
     if (e.key === '/') { e.preventDefault(); searchBar.classList.add('on'); searchIn.focus(); }
   });
 
