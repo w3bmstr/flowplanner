@@ -72,6 +72,10 @@
   --shadow-lg: 0 20px 56px rgba(0,0,0,.5);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
 html { height: 100%; -webkit-text-size-adjust: 100%; }
 body {
   height: 100%; height: 100dvh;
@@ -1362,7 +1366,8 @@ body.focus .view { padding-top: 64px; }
         </div>
       </header>
       <div class="search-bar" id="search-bar">
-        <input type="search" id="search-input" placeholder="Search tasks, notes, events…" autocomplete="off" />
+        <label for="search-input" class="sr-only">Search tasks, notes, events</label>
+        <input type="search" id="search-input" name="search" placeholder="Search tasks, notes, events…" autocomplete="off" />
         <div class="search-results" id="search-results"></div>
       </div>
       <div class="views">
@@ -1422,8 +1427,10 @@ body.focus .view { padding-top: 64px; }
                 </div>
               </div>
               <div class="add-row">
-                <input type="text" id="task-in" placeholder="Add a task…" autocomplete="off" />
-                <select id="task-cat"><option value="work">Work</option><option value="personal">Personal</option><option value="health">Health</option><option value="learning">Learning</option></select>
+                <label for="task-in" class="sr-only">New task</label>
+                <input type="text" id="task-in" name="task" placeholder="Add a task…" autocomplete="off" />
+                <label for="task-cat" class="sr-only">Category</label>
+                <select id="task-cat" name="task-category"><option value="work">Work</option><option value="personal">Personal</option><option value="health">Health</option><option value="learning">Learning</option></select>
                 <button type="button" class="btn btn-primary" id="task-add">Add</button>
               </div>
               <ul class="list" id="task-list"></ul>
@@ -1445,8 +1452,10 @@ body.focus .view { padding-top: 64px; }
               <ul class="list" id="note-list"></ul>
             </div>
             <div class="neditor">
-              <input type="text" id="note-title" placeholder="Title" />
-              <textarea id="note-content" placeholder="Write freely…"></textarea>
+              <label for="note-title" class="sr-only">Note title</label>
+              <input type="text" id="note-title" name="note-title" placeholder="Title" autocomplete="off" />
+              <label for="note-content" class="sr-only">Note content</label>
+              <textarea id="note-content" name="note-content" placeholder="Write freely…"></textarea>
               <div class="nacts">
                 <button type="button" class="btn btn-primary" id="note-save">Save</button>
                 <button type="button" class="btn btn-danger" id="note-del">Delete</button>
@@ -1549,7 +1558,8 @@ body.focus .view { padding-top: 64px; }
                     <button type="button" class="icon-btn desktop-only" id="email-folders-btn" title="Folders" style="display:none;">
                       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
-                    <input type="search" class="email-search" id="email-search" placeholder="Search emails…" autocomplete="off" />
+                    <label for="email-search" class="sr-only">Search emails</label>
+                    <input type="search" class="email-search" id="email-search" name="email-search" placeholder="Search emails…" autocomplete="off" />
                   </div>
                   <button type="button" class="icon-btn" id="email-select-btn" title="Select messages" style="flex-shrink:0;">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -1594,7 +1604,8 @@ body.focus .view { padding-top: 64px; }
                 </div>
                 <div class="thread-scroll" id="thread-scroll"></div>
                 <div class="email-reply-bar" id="reply-bar">
-                  <textarea id="reply-body" placeholder="Quick reply…" rows="2"></textarea>
+                  <label for="reply-body" class="sr-only">Quick reply</label>
+                  <textarea id="reply-body" name="reply" placeholder="Quick reply…" rows="2" aria-label="Quick reply"></textarea>
                   <button type="button" class="btn btn-primary" id="reply-send" style="padding:8px 14px;font-size:12.5px;white-space:nowrap;">Send</button>
                 </div>
               </div>
@@ -1624,18 +1635,18 @@ body.focus .view { padding-top: 64px; }
         <button type="button" class="icon-btn" id="modal-x" aria-label="Close"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
       </div>
       <div class="modal-b">
-        <div class="fg"><label>Type</label>
+        <div class="fg"><label for="m-type">Type</label>
           <select id="m-type"><option value="task">Task</option><option value="event">Time block</option><option value="note">Note</option><option value="alarm">Alarm</option><option value="habit">Habit</option><option value="project">Project</option></select>
         </div>
-        <div class="fg"><label>Title</label><input type="text" id="m-title" placeholder="What needs attention?" autocomplete="off" /></div>
-        <div class="fg" id="m-date-g"><label>Date</label><input type="date" id="m-date" /></div>
-        <div class="fg" id="m-time-g"><label>Time</label><input type="time" id="m-time" /></div>
-        <div class="fg" id="m-dur-g"><label>Duration (min)</label><input type="number" id="m-dur" value="30" min="5" step="5" /></div>
-        <div class="fg" id="m-cat-g"><label>Category</label>
-          <select id="m-cat"><option value="work">Work</option><option value="personal">Personal</option><option value="health">Health</option><option value="learning">Learning</option></select>
+        <div class="fg"><label for="m-title">Title</label><input type="text" id="m-title" name="title" placeholder="What needs attention?" autocomplete="off" /></div>
+        <div class="fg" id="m-date-g"><label for="m-date">Date</label><input type="date" id="m-date" name="date" /></div>
+        <div class="fg" id="m-time-g"><label for="m-time">Time</label><input type="time" id="m-time" name="time" /></div>
+        <div class="fg" id="m-dur-g"><label for="m-dur">Duration (min)</label><input type="number" id="m-dur" name="duration" value="30" min="5" step="5" /></div>
+        <div class="fg" id="m-cat-g"><label for="m-cat">Category</label>
+          <select id="m-cat" name="category"><option value="work">Work</option><option value="personal">Personal</option><option value="health">Health</option><option value="learning">Learning</option></select>
         </div>
-        <div class="fg" id="m-prio-g"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="m-prio" style="width:auto" /> Priority</label></div>
-        <div class="fg" id="m-body-g" style="display:none"><label>Content</label><textarea id="m-body" rows="3"></textarea></div>
+        <div class="fg" id="m-prio-g"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="m-prio" name="priority" style="width:auto" /> Priority</label></div>
+        <div class="fg" id="m-body-g" style="display:none"><label for="m-body">Content</label><textarea id="m-body" name="content" rows="3"></textarea></div>
       </div>
       <div class="modal-f" style="justify-content:space-between;">
         <button type="button" class="btn btn-danger" id="m-delete" style="display:none;">Delete</button>
@@ -1657,7 +1668,8 @@ body.focus .view { padding-top: 64px; }
   </div>
   <div class="cmd" id="cmd">
     <div class="cmd-box">
-      <input type="text" id="cmd-in" placeholder="Type a command…" autocomplete="off" />
+      <label for="cmd-in" class="sr-only">Command palette</label>
+      <input type="text" id="cmd-in" name="command" placeholder="Type a command…" autocomplete="off" aria-label="Command palette" />
       <div class="cmd-list" id="cmd-list"></div>
     </div>
   </div>
@@ -1719,22 +1731,22 @@ body.focus .view { padding-top: 64px; }
       </div>
       <div class="modal-b" style="font-size:13.5px;line-height:1.6;">
         <div class="fg">
-          <label>Theme</label>
-          <select id="set-theme">
+          <label for="set-theme">Theme</label>
+          <select id="set-theme" name="theme">
             <option value="light">Light</option>
             <option value="dark">Dark</option>
           </select>
         </div>
         <div class="fg">
-          <label>Email — "Send via" mode</label>
+          <span class="fg-label" id="mailto-mode-label" style="font-size:11.5px;font-weight:550;color:var(--text-2);display:block;margin-bottom:5px;">Email — "Send via" mode</span>
           <p style="color:var(--text-3);font-size:12.5px;margin-bottom:10px;">When enabled, Compose uses your device's default mail app (mailto:) instead of the offline inbox.</p>
           <div class="mailto-row">
-            <label for="set-mailto">Use system mail app (mailto:)</label>
-            <div class="toggle-pill" id="set-mailto" role="switch" aria-checked="false" tabindex="0"></div>
+            <span id="set-mailto-label">Use system mail app (mailto:)</span>
+            <div class="toggle-pill" id="set-mailto" role="switch" aria-checked="false" aria-labelledby="set-mailto-label" tabindex="0"></div>
           </div>
         </div>
         <div class="fg">
-          <label>Data</label>
+          <span class="fg-label" style="font-size:11.5px;font-weight:550;color:var(--text-2);display:block;margin-bottom:5px;">Data</span>
           <p style="color:var(--text-3);font-size:12.5px;margin-bottom:8px;">Everything is stored only on this device in localStorage.</p>
           <button type="button" class="btn" id="set-export-all" style="margin-bottom:8px;width:100%;">Export all data + email (JSON)</button>
           <button type="button" class="btn btn-danger" id="set-reset" style="width:100%;">Reset app &amp; show onboarding</button>
@@ -1759,19 +1771,22 @@ body.focus .view { padding-top: 64px; }
       </div>
     </div>
     <div class="compose-fields" id="compose-fields">
-      <div class="cf"><label>To</label><input type="email" id="c-to" placeholder="recipient@example.com" autocomplete="off" multiple list="email-contacts" /></div>
-      <div class="cf"><label>Cc</label><input type="email" id="c-cc" placeholder="" autocomplete="off" multiple list="email-contacts" /></div>
-      <div class="cf"><label>Sub</label><input type="text" id="c-sub" placeholder="Subject" autocomplete="off" /></div>
+      <div class="cf"><label for="c-to">To</label><input type="email" id="c-to" name="to" placeholder="recipient@example.com" autocomplete="email" multiple list="email-contacts" /></div>
+      <div class="cf"><label for="c-cc">Cc</label><input type="email" id="c-cc" name="cc" placeholder="" autocomplete="email" multiple list="email-contacts" /></div>
+      <div class="cf"><label for="c-sub">Sub</label><input type="text" id="c-sub" name="subject" placeholder="Subject" autocomplete="off" /></div>
       <datalist id="email-contacts"></datalist>
-      <textarea class="compose-body" id="c-body" placeholder="Write your message…"></textarea>
+      <label for="c-body" class="sr-only">Message body</label>
+      <textarea class="compose-body" id="c-body" name="body" placeholder="Write your message…" aria-label="Message body"></textarea>
       <div class="compose-attachments" id="compose-attachments" style="display:none;"></div>
       <div class="compose-foot">
         <button type="button" class="btn btn-primary" id="c-send" style="font-size:12.5px;padding:7px 14px;">Send</button>
         <button type="button" class="btn" id="c-draft" style="font-size:12.5px;padding:7px 12px;">Save draft</button>
         <button type="button" class="btn" id="c-later-toggle" style="font-size:12.5px;padding:7px 12px;" title="Send later">⏰ Later</button>
-        <input type="datetime-local" id="c-later-time" class="send-later-time" />
+        <label for="c-later-time" class="sr-only">Send later time</label>
+        <input type="datetime-local" id="c-later-time" name="send-later" class="send-later-time" aria-label="Send later date and time" />
         <button type="button" class="btn" id="c-attach" style="font-size:12.5px;padding:7px 10px;" title="Attach files">📎</button>
-        <input type="file" id="c-attach-input" multiple style="display:none;" />
+        <label for="c-attach-input" class="sr-only">Attach files</label>
+        <input type="file" id="c-attach-input" name="attachments" multiple style="display:none;" aria-label="Attach files" />
         <button type="button" class="btn btn-danger btn-ghost" id="c-discard" style="margin-left:auto;font-size:12.5px;padding:7px 10px;">Discard</button>
       </div>
     </div>
