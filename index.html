@@ -1240,7 +1240,31 @@ body.focus .view { padding-top: 64px; }
 }
 .toggle-pill.on::after { transform: translateX(16px); }
 
-  </style>
+  
+.crm{padding:16px;max-width:1200px;margin:0 auto}
+.crm-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.crm-bar .sp{flex:1}
+.crm-panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:14px;box-shadow:var(--shadow)}
+.crm-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.crm-form label{font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px}
+.crm-form input,.crm-form select,.crm-form textarea,.crm-panel input[type=url]{font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line-2);border-radius:10px;background:var(--bg);color:var(--text)}
+.crm-form .wide{grid-column:1/-1}
+.crm-prev{font-size:13px;color:var(--text-2);margin-top:10px}
+.crm-note{font-size:12px;color:var(--text-3);margin-top:8px;line-height:1.5}
+.crm-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;align-items:start}
+.crm-col{background:var(--surface-2);border-radius:var(--r);padding:10px;min-height:90px}
+.crm-col h4{margin:2px 4px 10px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-2);display:flex;justify-content:space-between}
+.crm-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;font-size:13px}
+.crm-card b{font-size:14px}
+.crm-card .m{color:var(--text-2);margin-top:2px}
+.crm-card .tot{margin-top:6px;font-weight:600}
+.crm-card .tx{font-size:12px;color:var(--text-3)}
+.crm-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.crm-acts .btn{padding:5px 9px;font-size:12px}
+.crm-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.crm-tbl th,.crm-tbl td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right}
+.crm-tbl th:first-child,.crm-tbl td:first-child{text-align:left}
+</style>
 </head>
 <body>
   <div class="onboard" id="onboard">
@@ -1291,6 +1315,10 @@ body.focus .view { padding-top: 64px; }
         <button type="button" class="nav-item" data-view="email" title="Email">
           <span class="nav-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></span>
           <span>Email</span> <span class="kbd">6</span><span class="nav-badge" id="email-nav-badge"></span>
+        </button>
+        <button type="button" class="nav-item" data-view="crm" title="Clients">
+          <span class="nav-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></span>
+          <span>Clients</span> <span class="kbd">7</span>
         </button>
       </nav>
       <div class="sidebar-foot">
@@ -1470,6 +1498,7 @@ body.focus .view { padding-top: 64px; }
         </section>
 
         <!-- ── EMAIL VIEW ─────────────────────────────────────── -->
+        <section id="crm-view" class="view"><div class="crm" id="crm-root"></div></section>
         <section id="email-view" class="view">
           <div class="email-g">
             <!-- Folder sidebar -->
@@ -1584,6 +1613,7 @@ body.focus .view { padding-top: 64px; }
       <button type="button" class="mi" data-view="calendar"><span class="mi-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></span><span>Cal</span></button>
       <button type="button" class="mi" data-view="habits"><span class="mi-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></span><span>Habits</span></button>
       <button type="button" class="mi" data-view="email"><span class="mi-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></span><span>Email</span></button>
+      <button type="button" class="mi" data-view="crm"><span class="mi-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></span><span>Clients</span></button>
     </div>
   </nav>
   <button type="button" class="fab" id="fab" aria-label="Add"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.25"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg></button>
@@ -1753,7 +1783,7 @@ body.focus .view { padding-top: 64px; }
 (function () {
   'use strict';
   const KEY = 'flowplanner_v3';
-  const titles = { dashboard: 'Today', tasks: 'Tasks', notes: 'Notes', calendar: 'Calendar', habits: 'Habits', email: 'Email' };
+  const titles = { dashboard: 'Today', tasks: 'Tasks', notes: 'Notes', calendar: 'Calendar', habits: 'Habits', email: 'Email', crm: 'Clients' };
 
   function today() {
     const d = new Date();
@@ -2721,6 +2751,234 @@ body.focus .view { padding-top: 64px; }
     toast._t = setTimeout(() => el.classList.remove('on'), undoFn ? 4500 : 2400);
   }
 
+
+  /* ===== CRM: pay-before-booking pipeline + provincial tax ===== */
+  const CRM_KEY = 'flowplanner_crm_v1';
+  // [name, GST or HST %, provincial %, provincial label] — 2026 rates
+  const PROV_D = {AB:['Alberta',5,0,''],BC:['British Columbia',5,7,'PST'],MB:['Manitoba',5,7,'RST'],NB:['New Brunswick',15,0,''],NL:['Newfoundland and Labrador',15,0,''],NS:['Nova Scotia',14,0,''],NT:['Northwest Territories',5,0,''],NU:['Nunavut',5,0,''],ON:['Ontario',13,0,''],PE:['Prince Edward Island',15,0,''],QC:['Quebec',5,9.975,'QST'],SK:['Saskatchewan',5,6,'PST'],YT:['Yukon',5,0,'']};
+  // US: [name, state rate %, average local rate %, 'Local (avg)', 'State tax', local on by default] — Tax Foundation, July 2026
+  const PROV_US = {AL:['Alabama',4,5.46,'Local (avg)','State tax',true],AK:['Alaska',0,1.82,'Local (avg)','State tax',true],AZ:['Arizona',5.6,2.94,'Local (avg)','State tax',true],AR:['Arkansas',6.5,2.98,'Local (avg)','State tax',true],CA:['California',7.25,1.78,'Local (avg)','State tax',true],CO:['Colorado',2.9,4.99,'Local (avg)','State tax',true],CT:['Connecticut',6.35,0,'Local (avg)','State tax',true],DE:['Delaware',0,0,'Local (avg)','State tax',true],DC:['District of Columbia',6,0,'Local (avg)','State tax',true],FL:['Florida',6,0.98,'Local (avg)','State tax',true],GA:['Georgia',4,3.56,'Local (avg)','State tax',true],HI:['Hawaii',4,0.5,'Local (avg)','State tax',true],ID:['Idaho',6,0.03,'Local (avg)','State tax',true],IL:['Illinois',6.25,2.73,'Local (avg)','State tax',true],IN:['Indiana',7,0,'Local (avg)','State tax',true],IA:['Iowa',6,0.94,'Local (avg)','State tax',true],KS:['Kansas',6.5,2.21,'Local (avg)','State tax',true],KY:['Kentucky',6,0,'Local (avg)','State tax',true],LA:['Louisiana',5,5.13,'Local (avg)','State tax',true],ME:['Maine',5.5,0,'Local (avg)','State tax',true],MD:['Maryland',6,0,'Local (avg)','State tax',true],MA:['Massachusetts',6.25,0,'Local (avg)','State tax',true],MI:['Michigan',6,0,'Local (avg)','State tax',true],MN:['Minnesota',6.875,1.26,'Local (avg)','State tax',true],MS:['Mississippi',7,0.06,'Local (avg)','State tax',true],MO:['Missouri',4.225,4.22,'Local (avg)','State tax',true],MT:['Montana',0,0,'Local (avg)','State tax',true],NE:['Nebraska',5.5,1.48,'Local (avg)','State tax',true],NV:['Nevada',6.85,1.39,'Local (avg)','State tax',true],NH:['New Hampshire',0,0,'Local (avg)','State tax',true],NJ:['New Jersey',6.625,0,'Local (avg)','State tax',true],NM:['New Mexico',4.875,2.8,'Local (avg)','State tax',true],NY:['New York',4,4.54,'Local (avg)','State tax',true],NC:['North Carolina',4.75,2.35,'Local (avg)','State tax',true],ND:['North Dakota',5,2.09,'Local (avg)','State tax',true],OH:['Ohio',5.75,1.54,'Local (avg)','State tax',true],OK:['Oklahoma',4.5,4.56,'Local (avg)','State tax',true],OR:['Oregon',0,0,'Local (avg)','State tax',true],PA:['Pennsylvania',6,0.34,'Local (avg)','State tax',true],RI:['Rhode Island',7,0,'Local (avg)','State tax',true],SC:['South Carolina',6,1.49,'Local (avg)','State tax',true],SD:['South Dakota',4.2,1.91,'Local (avg)','State tax',true],TN:['Tennessee',7,2.61,'Local (avg)','State tax',true],TX:['Texas',6.25,1.95,'Local (avg)','State tax',true],UT:['Utah',6.1,1.32,'Local (avg)','State tax',true],VT:['Vermont',6,0.43,'Local (avg)','State tax',true],VA:['Virginia',5.3,0.47,'Local (avg)','State tax',true],WA:['Washington',6.5,3.07,'Local (avg)','State tax',true],WV:['West Virginia',6,0.6,'Local (avg)','State tax',true],WI:['Wisconsin',5,0.72,'Local (avg)','State tax',true],WY:['Wyoming',4,1.39,'Local (avg)','State tax',true]};
+  const PROV_ALL = Object.assign({}, PROV_D, PROV_US);
+  const CAN = Object.keys(PROV_D);
+  let PROV = JSON.parse(JSON.stringify(PROV_ALL));
+  const secOn = k => { const q = PROV[k]; return q ? (q[5] !== undefined ? !!q[5] : k === 'QC') : false; };
+  const P = k => PROV[k] || Object.values(PROV)[0] || ['(none)', 0, 0, ''];
+  const HST = ['NB','NL','NS','ON','PE'];
+  const STAGES = [['lead','Lead'],['invoiced','Invoiced'],['paid','Paid'],['booked','Booked'],['done','Done']];
+  const NEXT = { invoiced: 'Send invoice', paid: 'Mark paid', booked: 'Book meeting', done: 'Complete' };
+  let crm = (function () {
+    let r = null; try { r = JSON.parse(localStorage.getItem(CRM_KEY)); } catch (e) {}
+    r = Object.assign({ clients: [], hook: '', home: 'BC', cur: 'CAD', services: [] }, r || {});
+    if (r.jur && Object.keys(r.jur).length) { if (r.jurV !== 2) { r.jur = Object.assign({}, PROV_US, r.jur); r.jurV = 2; } PROV = r.jur; }
+    r.biz = Object.assign({ name: '', email: '', gst: '', pst: '', link: '' }, r.biz || {});
+    return r;
+  })();
+  let crmUI = { form: null, settings: false, stack: false, q: '' };
+  function crmSave() { localStorage.setItem(CRM_KEY, JSON.stringify({ clients: crm.clients, hook: crm.hook, home: crm.home, biz: crm.biz, cur: crm.cur, services: crm.services, jur: PROV, jurV: 2 })); }
+  function crmTax(c) {
+    const p = P(c.province), price = Math.round((+c.amount || 0) * 100), ex = !!c.exempt, r1 = ex ? 0 : p[1], pp = (!ex && p[2] && c.pst) ? p[2] : 0;
+    let base = price, fed, pr;
+    if (c.incl) {
+      base = Math.round(price / (1 + (r1 + pp) / 100)); fed = Math.round(base * r1 / 100);
+      if (pp) pr = price - base - fed; else { pr = 0; fed = price - base; }
+    } else { fed = Math.round(base * r1 / 100); pr = Math.round(base * pp / 100); }
+    const total = base + fed + pr, d = (c.deposit === '' || c.deposit == null) ? 100 : Math.min(100, Math.max(0, +c.deposit));
+    return { amt: base, fed, pr, total, due: Math.round(total * d / 100), fedL: p[4] || (HST.includes(c.province) ? 'HST' : 'GST'), prL: p[3] || 'PST' };
+  }
+  function money(n) { return (n / 100).toLocaleString('en-CA', { style: 'currency', currency: crm.cur || 'CAD' }); }
+  function crmPing(ev, c) {
+    if (!crm.hook) return;
+    const t = crmTax(c), b = new URLSearchParams({ event: ev, name: c.name, email: c.email, phone: c.phone, province: c.province, service: c.service, stage: c.stage, invoice_no: c.invoiceNo || '', subtotal: (t.amt / 100).toFixed(2), gst_hst: (t.fed / 100).toFixed(2), provincial_tax: (t.pr / 100).toFixed(2), total: (t.total / 100).toFixed(2), due_now: (t.due / 100).toFixed(2), meeting_date: c.meetDate || '', notes: c.notes || '' });
+    fetch(crm.hook, { method: 'POST', mode: 'no-cors', body: b }).catch(() => {});
+  }
+  function crmInvoice(c) {
+    const t = crmTax(c), bz = crm.biz, r = (l, v) => '<tr><td>' + l + '</td><td class="r">' + v + '</td></tr>';
+    const html = '<!doctype html><meta charset="utf-8"><title>' + esc(c.invoiceNo || 'Invoice') + '</title><style>body{font:14px system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;color:#111}table{width:100%;border-collapse:collapse;margin-top:16px}td{padding:8px 0;border-bottom:1px solid #ddd}.r{text-align:right}h1{font-size:22px;margin:16px 0 4px}@media print{button{display:none}}</style><button onclick="print()">Print / Save as PDF</button><h1>' + esc(bz.name || 'Invoice') + '</h1><p>' + [bz.email, bz.gst && 'GST/HST #: ' + bz.gst, bz.pst && 'PST/QST #: ' + bz.pst].filter(Boolean).map(esc).join('<br>') + '</p><p><b>' + esc(c.invoiceNo || 'DRAFT') + '</b> · ' + today() + '<br>Bill to: ' + esc(c.name) + (c.email ? ' · ' + esc(c.email) : '') + '<br>Location of supply: ' + P(c.province)[0] + '</p><table>' + r(esc(c.service || 'Service'), money(t.amt)) + r(t.fedL + ' (' + P(c.province)[1] + '%)', money(t.fed)) + (t.pr ? r(t.prL + ' (' + P(c.province)[2] + '%)', money(t.pr)) : '') + r('<b>Total (' + crm.cur + ')</b>', '<b>' + money(t.total) + '</b>') + (t.due !== t.total ? r('Due now to book', money(t.due)) : '') + '</table><p>' + (c.paidAt ? 'Paid ' + esc(c.paidAt) : 'Payment is required before your meeting is booked.') + '</p>';
+    window.open(URL.createObjectURL(new Blob([html], { type: 'text/html' })), '_blank');
+  }
+  function crmSettingsExtra() {
+    const inp = (f, v, w, t) => '<input data-f="' + f + '" type="' + (t || 'text') + '" value="' + esc(v) + '" style="width:' + w + ';font:inherit;font-size:13px;padding:5px 7px;border:1px solid var(--line-2);border-radius:8px;background:var(--bg);color:var(--text)">';
+    const sd = on => '<label style="font-size:12px"><input type="checkbox" data-f="sd"' + (on ? ' checked' : '') + '> 2nd on</label>';
+    const jr = Object.keys(PROV).map(k => { const j = PROV[k]; return '<div data-j="' + esc(k) + '" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">' + inp('code', k, '56px') + inp('n', j[0], '150px') + inp('a', j[1], '64px', 'number') + inp('l1', j[4] || (HST.includes(k) ? 'HST' : 'GST'), '70px') + inp('b', j[2], '64px', 'number') + inp('l2', j[3], '70px') + sd(secOn(k)) + '</div>'; }).join('');
+    const blankJ = '<div data-j="new" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">' + inp('code', '', '56px') + inp('n', '', '150px') + inp('a', '', '64px', 'number') + inp('l1', '', '70px') + inp('b', '', '64px', 'number') + inp('l2', '', '70px') + sd(false) + '</div>';
+    const sv = crm.services.concat([{ id: 'new', name: '', price: '', deposit: 100, pst: false }]).map(x => '<div data-svc="' + x.id + '" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;align-items:center">' + inp('name', x.name, '170px') + inp('price', x.price, '80px', 'number') + inp('deposit', x.deposit, '60px', 'number') + '<label style="font-size:12px"><input type="checkbox" data-f="pst"' + (x.pst ? ' checked' : '') + '> 2nd tax</label><label style="font-size:12px"><input type="checkbox" data-f="ex"' + (x.exempt ? ' checked' : '') + '> no tax</label>' + (x.id !== 'new' ? '<button class="btn btn-danger" data-act="svcdel" data-id="' + x.id + '">×</button>' : '') + '</div>').join('');
+    return '<div style="margin-top:14px"><b style="font-size:13px">Services</b><div class="crm-note" style="margin:2px 0 6px">Name · price · % due before booking · whether the second tax applies. Pick them when adding a client.</div>' + sv + '</div><div style="margin-top:14px"><b style="font-size:13px">Tax rates by location</b><div class="crm-note" style="margin:2px 0 6px">Code · name · main rate % · main label · second rate % · second label. The main rate always applies; the second applies only when ticked per client or service. Edit, add any location (for example a US state with its rate), or clear a code to remove it. Canada 2026 rates and US state rates (Tax Foundation, July 2026) are preloaded. The US second tax is the state’s average local rate, not an exact one. ‘2nd on’ ticks the second tax by default for that location.</div><div style="max-height:320px;overflow:auto">' + blankJ + jr + '</div></div>';
+  }
+  function crmLog(c, t) { (c.log = c.log || []).push({ d: today(), t }); }
+  function csvParse(t) {
+    const rows = []; let r = [], f = '', q = false;
+    for (let i = 0; i < t.length; i++) {
+      const ch = t[i];
+      if (q) { if (ch === '"') { if (t[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += ch; }
+      else if (ch === '"') q = true;
+      else if (ch === ',') { r.push(f); f = ''; }
+      else if (ch === '\n' || ch === '\r') { if (ch === '\r' && t[i + 1] === '\n') i++; r.push(f); f = ''; rows.push(r); r = []; }
+      else f += ch;
+    }
+    if (f || r.length) { r.push(f); rows.push(r); }
+    return rows.filter(x => x.some(y => y.trim()));
+  }
+  function crmFormPreview() {
+    const f = document.getElementById('crm-form'); if (!f) return;
+    const q = n => f.querySelector('[name="' + n + '"]'), pv = q('province').value;
+    const t = crmTax({ amount: q('amount').value, province: pv, pst: q('pst').checked, exempt: q('exempt').checked, incl: q('incl').checked, deposit: q('deposit').value });
+    document.getElementById('crm-prev').textContent = 'Subtotal ' + money(t.amt) + ' + ' + t.fedL + ' ' + money(t.fed) + (P(pv)[2] ? ' + ' + t.prL + ' ' + money(t.pr) : '') + ' = ' + money(t.total) + (t.due !== t.total ? ' · due now ' + money(t.due) : '');
+  }
+  function crmView() {
+    const root = document.getElementById('crm-root'); if (!root) return;
+    const opt = (k, sel) => '<option value="' + k + '"' + (k === sel ? ' selected' : '') + '>' + esc(P(k)[0]) + '</option>';
+    const provOpts = sel => { const ks = Object.keys(PROV); return '<optgroup label="Canada">' + ks.filter(k => CAN.includes(k)).map(k => opt(k, sel)).join('') + '</optgroup><optgroup label="United States and custom">' + ks.filter(k => !CAN.includes(k)).sort((x, y) => P(x)[0].localeCompare(P(y)[0])).map(k => opt(k, sel)).join('') + '</optgroup>'; };
+    const fld = (l, id, v, ph) => '<label>' + l + '<input id="' + id + '" value="' + esc(v) + '" placeholder="' + (ph || '') + '"></label>';
+    let h = '<div class="crm-bar"><button class="btn btn-primary" data-act="add">+ Client</button><input type="search" id="crm-q" placeholder="Search clients…" value="' + esc(crmUI.q) + '" style="font:inherit;padding:7px 10px;border:1px solid var(--line-2);border-radius:10px;background:var(--surface);color:var(--text)"><span class="sp"></span><button class="btn" data-act="stack">Stack guide</button><button class="btn" data-act="settings">Settings</button><button class="btn" data-act="import">Import CSV</button><button class="btn" data-act="export">Export CSV</button><button class="btn" data-act="backup">Backup</button><button class="btn" data-act="restore">Restore</button><input type="file" id="crm-file" accept=".json" hidden><input type="file" id="crm-csv" accept=".csv,text/csv" hidden></div>';
+    const all = crm.clients, live = all.filter(c => c.paidAt && !c.refunded);
+    const sum = (l, k) => l.reduce((n, c) => n + crmTax(c)[k], 0);
+    h += '<div class="crm-board" style="margin-bottom:14px">' + [['Awaiting payment', money(sum(all.filter(c => c.stage === 'invoiced'), 'due'))], ['Paid (before tax)', money(sum(live, 'amt'))], ['Tax collected', money(sum(live, 'fed') + sum(live, 'pr'))], ['Clients', all.length]].map(x => '<div class="crm-card" style="margin:0"><div class="tx">' + x[0] + '</div><b style="font-size:18px">' + x[1] + '</b></div>').join('') + '</div>';
+    if (crmUI.stack) {
+      h += '<div class="crm-panel"><b>Stack for pay-before-booking with tax by location</b><div class="crm-note"><p><b>What the research found:</b> Dubsado states it cannot calculate tax from the client’s location; you create one tax item per location and pick it per invoice. HoneyBook also applies tax rates you choose on each invoice, and its QuickBooks sync maps to a single tax rate. Both have schedulers that can require payment before a meeting is booked (Dubsado scheduling is reported as a Premier-plan feature, so check current plans).</p><p><b>Option A, simplest:</b> HoneyBook or Dubsado handles lead form, contract, invoice and scheduler. Set up one tax rate per province once (Dubsado lets you stack GST + PST on a line). Use this tab to see which rate applies to each client.</p><p><b>Option B, automatic tax:</b> Stripe Tax supports Canada (GST/HST plus BC and SK PST, MB RST, Quebec QST). Create a Stripe Payment Link with “Collect tax automatically” (it collects the client’s address), then redirect to your booking page after payment. Trade-off: the booking page itself isn’t locked, and you re-enter the payment in your CRM or send it via the Zapier webhook below. Stripe Tax needs your tax registrations set up first.</p><p><b>Avoid:</b> schedulers with one flat tax rate (Acuity applies a single rate, and its own tax settings stop working once a payment processor is connected).</p><p>This tool is an aid, not tax advice. Services are taxed differently by province, so confirm with CRA or an accountant.</p></div></div>';
+    }
+    if (crmUI.settings) {
+      h += '<div class="crm-panel"><b>Settings</b><p class="crm-note" style="margin:6px 0 10px">HoneyBook and Dubsado have no public API; both connect through Zapier. Create a Zap with <i>Webhooks by Zapier → Catch Hook</i>, paste its URL, then add a HoneyBook (Create Project) or Dubsado action. Each new client or stage change sends name, email, province, subtotal, tax, total, due-now and meeting date.</p><div class="crm-form">' + fld('Zapier catch-hook URL', 'crm-hook', crm.hook, 'https://hooks.zapier.com/hooks/catch/…').replace('<label>', '<label class="wide">') + '<label>Home location<select id="crm-home">' + provOpts(crm.home) + '</select></label><label>Currency<select id="crm-cur">' + ['CAD','USD','GBP','EUR','AUD','NZD'].map(x => '<option' + (x === crm.cur ? ' selected' : '') + '>' + x + '</option>').join('') + '</select></label>' + fld('Business name', 'crm-bn', crm.biz.name) + fld('Business email', 'crm-be', crm.biz.email) + fld('GST/HST number', 'crm-bg', crm.biz.gst) + fld('PST/QST number', 'crm-bp', crm.biz.pst) + fld('Booking link (sent after payment)', 'crm-bl', crm.biz.link, 'https://…').replace('<label>', '<label class="wide">') + '</div>' + crmSettingsExtra() + '<div class="crm-acts"><button class="btn btn-primary" data-act="savehook">Save</button><button class="btn" data-act="test">Send test</button><button class="btn" data-act="taxreset">Reset tax rates to defaults</button></div></div>';
+    }
+    const f = crmUI.form;
+    if (f) {
+      h += '<div class="crm-panel"><form id="crm-form" class="crm-form" onsubmit="return false"><label>Name<input name="name" value="' + esc(f.name) + '"></label><label>Email<input name="email" type="email" value="' + esc(f.email) + '"></label><label>Phone<input name="phone" value="' + esc(f.phone) + '"></label><label>Client location (where service is supplied)<select name="province">' + provOpts(f.province) + '</select></label><label>From services list<select name="svc"><option value="">Custom</option>' + crm.services.map(x => '<option value="' + x.id + '">' + esc(x.name) + '</option>').join('') + '</select></label><label>Service<input name="service" value="' + esc(f.service) + '"></label><label>Lead source<input name="source" value="' + esc(f.source) + '" placeholder="Referral, Instagram…"></label><label>Price<input name="amount" type="number" step="0.01" min="0" value="' + (f.amount || '') + '"></label><label>Due before booking (% of total)<input name="deposit" type="number" min="0" max="100" value="' + (f.deposit == null ? 100 : f.deposit) + '"></label><label>Meeting date<input name="meetDate" type="date" value="' + esc(f.meetDate) + '"></label><label>Meeting time<input name="meetTime" type="time" value="' + esc(f.meetTime) + '"></label><label class="wide" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" name="incl"' + (f.incl ? ' checked' : '') + '> Price already includes tax</label><label class="wide" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" name="exempt"' + (f.exempt ? ' checked' : '') + '> No tax on this client or service (exempt, untaxed service, outside your tax registration)</label><label class="wide" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" name="pst"' + (f.pst ? ' checked' : '') + '> Second tax applies (PST/RST/QST in Canada, average local tax in the US)</label><label class="wide">Notes<textarea name="notes" rows="2">' + esc(f.notes) + '</textarea></label></form><div class="crm-prev" id="crm-prev"></div><div class="crm-acts"><button class="btn btn-primary" data-act="save">Save</button><button class="btn" data-act="cancel">Cancel</button></div><p class="crm-note">Canada: GST/HST applies at the client’s province rate; most services aren’t subject to BC, SK or MB provincial tax, Quebec QST generally is. US: state rate plus the state’s <i>average</i> local rate; the exact rate varies by city and ZIP, and most states don’t tax most services, so tick ‘No tax’ when that applies. When booked with a meeting date, it is added to your Calendar.</p></div>';
+    }
+    const ql = crmUI.q.toLowerCase();
+    h += '<div class="crm-board">';
+    STAGES.forEach(([k, label]) => {
+      const list = all.filter(c => c.stage === k && (!ql || [c.name, c.email, c.service].join(' ').toLowerCase().includes(ql)));
+      h += '<div class="crm-col"><h4><span>' + label + '</span><span>' + list.length + '</span></h4>';
+      list.forEach(c => {
+        const t = crmTax(c), i = STAGES.findIndex(x => x[0] === k), nx = STAGES[i + 1], id = ' data-id="' + c.id + '"';
+        h += '<div class="crm-card"><b>' + esc(c.name || 'Unnamed') + '</b>' + (c.refunded ? ' <span class="tx">(refunded)</span>' : '') + '<div class="m">' + esc(c.service) + ' · ' + c.province + (c.meetDate ? ' · ' + esc(c.meetDate) : '') + '</div><div class="tot">' + money(t.total) + (t.due !== t.total ? ' <span class="tx">due ' + money(t.due) + '</span>' : '') + '</div><div class="tx">' + t.fedL + ' ' + money(t.fed) + (t.pr ? ' · ' + t.prL + ' ' + money(t.pr) : '') + (c.invoiceNo ? ' · ' + c.invoiceNo : '') + '</div>' + (c.source ? '<div class="tx">Source: ' + esc(c.source) + '</div>' : '') + (c.log || []).slice(-2).map(x => '<div class="tx">' + esc(x.d + ' · ' + x.t) + '</div>').join('') + '<div class="crm-acts">';
+        if (nx) h += '<button class="btn btn-primary" data-act="stage"' + id + ' data-to="' + nx[0] + '">' + NEXT[nx[0]] + '</button>';
+        if (k === 'paid' && c.email && crm.biz.link) h += '<button class="btn" data-act="mail"' + id + '>Email booking link</button>';
+        if (i > 0) h += '<button class="btn" data-act="invoice"' + id + '>Invoice</button><button class="btn" data-act="stage"' + id + ' data-to="' + STAGES[i - 1][0] + '">Back</button>';
+        if (c.paidAt && !c.refunded) h += '<button class="btn" data-act="refund"' + id + '>Refund</button>';
+        h += '<button class="btn" data-act="note"' + id + '>Note</button><button class="btn" data-act="follow"' + id + '>Follow-up</button>';
+        h += '<button class="btn" data-act="edit"' + id + '>Edit</button><button class="btn btn-danger" data-act="del"' + id + '>Delete</button></div></div>';
+      });
+      h += '</div>';
+    });
+    h += '</div>';
+    const by = {};
+    live.forEach(c => { const t = crmTax(c), r = by[c.province] || (by[c.province] = { a: 0, f: 0, p: 0 }); r.a += t.amt; r.f += t.fed; r.p += t.pr; });
+    const ks = Object.keys(by);
+    h += '<div class="crm-panel" style="margin-top:14px"><b>Tax collected on paid clients (excludes refunds)</b>' + (ks.length ? '<table class="crm-tbl"><tr><th>Location</th><th>Sales</th><th>GST/HST</th><th>PST/RST/QST</th></tr>' + ks.map(k => '<tr><td>' + P(k)[0] + '</td><td>' + money(by[k].a) + '</td><td>' + money(by[k].f) + '</td><td>' + money(by[k].p) + '</td></tr>').join('') + '</table>' : '<p class="crm-note">Nothing yet. Totals appear once a client is marked paid.</p>') + '</div>';
+    root.innerHTML = h;
+    crmFormPreview();
+    if (crmUI.focusQ) { const qi = document.getElementById('crm-q'); qi.focus(); qi.setSelectionRange(qi.value.length, qi.value.length); }
+  }
+  function crmReadForm() {
+    const f = document.getElementById('crm-form'), v = crmUI.form, q = n => f.querySelector('[name="' + n + '"]');
+    ['name', 'email', 'phone', 'service', 'notes', 'province', 'meetDate', 'meetTime', 'source'].forEach(k => v[k] = q(k).value.trim());
+    v.amount = parseFloat(q('amount').value) || 0; v.pst = q('pst').checked; v.exempt = q('exempt').checked; v.incl = q('incl').checked;
+    const d = parseFloat(q('deposit').value); v.deposit = isNaN(d) ? 100 : Math.min(100, Math.max(0, d));
+    return v;
+  }
+  (function () {
+    const root = document.getElementById('crm-root');
+    root.addEventListener('input', e => {
+      if (e.target.id === 'crm-q') { crmUI.q = e.target.value; crmUI.focusQ = true; crmView(); crmUI.focusQ = false; }
+      else if (e.target.form && e.target.form.id === 'crm-form') crmFormPreview();
+    });
+    root.addEventListener('change', e => {
+      if (e.target.name === 'province') { e.target.form.querySelector('[name="pst"]').checked = secOn(e.target.value); crmFormPreview(); }
+      if (e.target.name === 'svc') {
+        const x = crm.services.find(y => y.id === e.target.value), f = e.target.form, q = n => f.querySelector('[name="' + n + '"]');
+        if (x) { q('service').value = x.name; q('amount').value = x.price; q('deposit').value = x.deposit; q('pst').checked = !!x.pst; q('exempt').checked = !!x.exempt; q('incl').checked = false; crmFormPreview(); }
+      }
+      if (e.target.id === 'crm-csv' && e.target.files[0]) {
+        const rd = new FileReader();
+        rd.onload = () => {
+          const rows = csvParse(rd.result), hd = (rows.shift() || []).map(x => x.trim().toLowerCase()), ix = (...n) => hd.findIndex(x => n.includes(x));
+          const I = { n: ix('name', 'client', 'full name'), e: ix('email', 'e-mail'), ph: ix('phone', 'mobile'), pr: ix('province', 'location', 'state', 'region'), s: ix('service', 'project', 'package'), a: ix('price', 'amount', 'subtotal'), so: ix('source', 'lead source') };
+          if (I.n < 0) { toast('CSV needs a Name column'); return; }
+          let n = 0;
+          rows.forEach(r => {
+            const g = i => i < 0 ? '' : (r[i] || '').trim(), pr = g(I.pr).toUpperCase();
+            if (!g(I.n)) return;
+            crm.clients.push({ id: uid(), name: g(I.n), email: g(I.e), phone: g(I.ph), province: PROV[pr] ? pr : crm.home, service: g(I.s), source: g(I.so) || 'CSV import', amount: parseFloat(g(I.a)) || 0, deposit: 100, pst: secOn(PROV[pr] ? pr : crm.home), exempt: false, incl: false, notes: '', stage: 'lead', created: today(), log: [{ d: today(), t: 'Imported' }] }); n++;
+          });
+          crmSave(); crmView(); toast(n + ' clients imported');
+        };
+        rd.readAsText(e.target.files[0]); e.target.value = '';
+      }
+      if (e.target.id === 'crm-file' && e.target.files[0]) {
+        const rd = new FileReader();
+        rd.onload = () => {
+          try {
+            const j = JSON.parse(rd.result); if (!Array.isArray(j.clients)) throw 0;
+            if (!confirm('Replace current client data with this backup?')) return;
+            crm.clients = j.clients; crm.hook = j.hook || ''; crm.home = j.home || 'BC'; crm.cur = j.cur || 'CAD'; crm.services = j.services || []; if (j.jur) PROV = j.jur; Object.assign(crm.biz, j.biz || {}); crmSave(); crmView(); toast('Backup restored');
+          } catch (x) { toast('That file is not a valid backup'); }
+        };
+        rd.readAsText(e.target.files[0]);
+      }
+    });
+    root.addEventListener('click', e => {
+      const b = e.target.closest('[data-act]'); if (!b) return;
+      const a = b.dataset.act, c = crm.clients.find(x => x.id === b.dataset.id), val = id => document.getElementById(id).value.trim();
+      const dl = (txt, type, name) => { const l = document.createElement('a'); l.href = URL.createObjectURL(new Blob([txt], { type })); l.download = name; l.click(); };
+      if (a === 'add') crmUI.form = { id: null, name: '', email: '', phone: '', province: crm.home, service: '', source: '', amount: '', deposit: 100, pst: secOn(crm.home), incl: false, exempt: false, meetDate: '', meetTime: '', notes: '' };
+      else if (a === 'edit') crmUI.form = Object.assign({}, c);
+      else if (a === 'cancel') crmUI.form = null;
+      else if (a === 'settings') crmUI.settings = !crmUI.settings;
+      else if (a === 'stack') crmUI.stack = !crmUI.stack;
+      else if (a === 'invoice') { crmInvoice(c); return; }
+      else if (a === 'mail') { location.href = 'mailto:' + encodeURIComponent(c.email) + '?subject=' + encodeURIComponent('Payment received. Book your meeting') + '&body=' + encodeURIComponent('Hi ' + c.name + ',\n\nThank you, your payment has been received. You can book your meeting here:\n' + crm.biz.link + '\n\n' + (crm.biz.name || '')); return; }
+      else if (a === 'import') { document.getElementById('crm-csv').click(); return; }
+      else if (a === 'note') { const t = prompt('Note for ' + c.name + ':'); if (!t) return; crmLog(c, t); crmSave(); }
+      else if (a === 'follow') {
+        const w = prompt('Follow up with ' + c.name + ' when?', 'in 3 days'); if (!w) return;
+        data.tasks.unshift({ id: uid(), title: 'Follow up: ' + c.name + ' (' + w + ')', category: 'work', done: false, priority: false, created: Date.now() }); save(); crmLog(c, 'Follow-up task: ' + w); crmSave(); toast('Added to your Tasks');
+      }
+      else if (a === 'svcdel') { crm.services = crm.services.filter(x => x.id !== b.dataset.id); crmSave(); }
+      else if (a === 'taxreset') { if (!confirm('Replace all tax rates with the built-in Canada and US defaults?')) return; PROV = JSON.parse(JSON.stringify(PROV_ALL)); crmSave(); }
+      else if (a === 'restore') { document.getElementById('crm-file').click(); return; }
+      else if (a === 'backup') { dl(JSON.stringify({ clients: crm.clients, hook: crm.hook, home: crm.home, biz: crm.biz, cur: crm.cur, services: crm.services, jur: PROV }, null, 1), 'application/json', 'flowplanner-crm-' + today() + '.json'); return; }
+      else if (a === 'save') {
+        const v = crmReadForm(); if (!v.name) { toast('Add a client name'); return; }
+        if (v.id) Object.assign(crm.clients.find(x => x.id === v.id), v);
+        else { v.id = uid(); v.stage = 'lead'; v.created = today(); v.log = [{ d: today(), t: 'Created' }]; crm.clients.push(v); crmPing('client_created', v); }
+        crmUI.form = null; crmSave();
+      } else if (a === 'del') {
+        if (!confirm('Delete ' + c.name + '?')) return;
+        crm.clients = crm.clients.filter(x => x !== c); crmSave();
+      } else if (a === 'refund') {
+        if (!confirm('Mark ' + c.name + ' as refunded? Their tax is removed from the totals.')) return;
+        c.refunded = true; crmSave(); crmPing('refunded', c);
+      } else if (a === 'stage') {
+        const to = b.dataset.to;
+        if (to === 'booked' && (!c.paidAt || c.refunded)) { toast('Payment first: mark paid before booking'); return; }
+        if (to === 'paid') { c.paidAt = today(); c.refunded = false; }
+        if (['lead', 'invoiced'].includes(to)) c.paidAt = null;
+        if (to === 'invoiced' && !c.invoiceNo) c.invoiceNo = 'INV-' + String(crm.clients.filter(x => x.invoiceNo).length + 1).padStart(4, '0');
+        if (to === 'booked' && c.meetDate && !c.evId) {
+          c.evId = uid(); data.events.push({ id: c.evId, title: 'Meeting: ' + c.name, time: c.meetTime || '09:00', duration: 60, category: 'work', date: c.meetDate }); save();
+        }
+        crmLog(c, 'Moved to ' + to); c.stage = to; crmSave(); crmPing('stage_' + to, c);
+      } else if (a === 'savehook' || a === 'test') {
+        crm.hook = val('crm-hook'); crm.home = document.getElementById('crm-home').value;
+        crm.cur = val('crm-cur');
+        const sv = []; document.querySelectorAll('[data-svc]').forEach(r => { const g = n => r.querySelector('[data-f="' + n + '"]'), nm = g('name').value.trim(); if (nm) sv.push({ id: r.dataset.svc === 'new' ? uid() : r.dataset.svc, name: nm, price: parseFloat(g('price').value) || 0, deposit: g('deposit').value === '' ? 100 : +g('deposit').value, pst: g('pst').checked, exempt: g('ex').checked }); }); crm.services = sv;
+        const jr = {}; document.querySelectorAll('[data-j]').forEach(r => { const g = n => r.querySelector('[data-f="' + n + '"]'), k = g('code').value.trim().toUpperCase(); if (k) jr[k] = [g('n').value.trim() || k, parseFloat(g('a').value) || 0, parseFloat(g('b').value) || 0, g('l2').value.trim(), g('l1').value.trim(), g('sd').checked]; }); if (Object.keys(jr).length) PROV = jr;
+        crm.biz = { name: val('crm-bn'), email: val('crm-be'), gst: val('crm-bg'), pst: val('crm-bp'), link: val('crm-bl') }; crmSave();
+        if (a === 'test') {
+          if (!crm.hook) { toast('Paste a Zapier hook URL first'); return; }
+          crmPing('test', { name: 'Test Client', email: 'test@example.com', phone: '', province: crm.home, service: 'Test', stage: 'lead', amount: 100, pst: false }); toast('Test sent. Check Zapier for the request');
+        } else toast('Saved');
+        return;
+      } else if (a === 'export') {
+        const q = x => '"' + String(x == null ? '' : x).replace(/"/g, '""') + '"';
+        const rows = [['Name', 'Email', 'Phone', 'Province', 'Service', 'Stage', 'Invoice', 'Subtotal', 'GST/HST', 'Provincial tax', 'Total', 'Due now', 'Paid on', 'Refunded', 'Meeting', 'Source', 'Notes']];
+        crm.clients.forEach(c => { const t = crmTax(c); rows.push([c.name, c.email, c.phone, c.province, c.service, c.stage, c.invoiceNo || '', (t.amt / 100).toFixed(2), (t.fed / 100).toFixed(2), (t.pr / 100).toFixed(2), (t.total / 100).toFixed(2), (t.due / 100).toFixed(2), c.paidAt || '', c.refunded ? 'yes' : '', c.meetDate || '', c.source || '', c.notes]); });
+        dl(rows.map(r => r.map(q).join(',')).join('\n'), 'text/csv', 'clients-' + today() + '.csv'); return;
+      }
+      crmView();
+    });
+  })();
+
   function go(v) {
     document.querySelectorAll('.nav-item, .mi').forEach(b => {
       const isActive = b.dataset.view === v;
@@ -2741,6 +2999,7 @@ body.focus .view { padding-top: 64px; }
     if (v === 'calendar') cal();
     if (v === 'habits') habits();
     if (v === 'email') emailView();
+    if (v === 'crm') crmView();
   }
   function sub(v) {
     const el = document.getElementById('view-sub');
@@ -2751,6 +3010,7 @@ body.focus .view { padding-top: 64px; }
     } else if (v === 'tasks') el.textContent = 'Capture and finish';
     else if (v === 'notes') el.textContent = 'Ideas without friction';
     else if (v === 'calendar') el.textContent = 'Month at a glance';
+    else if (v === 'crm') el.textContent = 'Pay first, then book · tax by province';
     else if (v === 'email') el.textContent = 'Offline inbox · send-later · mailto';
     else el.textContent = 'Consistency compounds';
   }
@@ -3763,6 +4023,7 @@ body.focus .view { padding-top: 64px; }
     if (e.key === '4') go('calendar');
     if (e.key === '5') go('habits');
     if (e.key === '6') go('email');
+    if (e.key === '7') go('crm');
     if (e.key === 'n' || e.key === 'N') openModal('task');
     if (e.key === 'f' || e.key === 'F') document.body.classList.add('focus');
     if (e.key === 'p' || e.key === 'P') planDay();
