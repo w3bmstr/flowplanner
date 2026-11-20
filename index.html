@@ -9,13 +9,19 @@
   <meta name="apple-mobile-web-app-title" content="FlowPlanner">
   <meta name="theme-color" content="#f5f5f3" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0c0c0b" media="(prefers-color-scheme: dark)">
-  <meta name="description" content="FlowPlanner — one place for time, tasks, notes, and habits. Offline. Zero friction.">
+  <meta name="description" content="FlowPlanner — time, tasks, notes, habits, email, and clients. Offline. Zero friction.">
   <meta name="application-name" content="FlowPlanner">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FlowPlanner">
   <title>FlowPlanner</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230f7a4a'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='16' font-family='system-ui' font-weight='700'>F</text></svg>">
+  <!-- System font stack works fully offline; Inter loads when online -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%231b7a4e'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='16' font-family='system-ui' font-weight='700'>F</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
   <style>
 :root {
   --bg: #f5f5f3;
@@ -39,7 +45,7 @@
   --shadow-lg: 0 16px 48px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.06);
   --r: 16px;
   --r-sm: 10px;
-  --font: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-t: env(safe-area-inset-top, 0px);
   --nav-h: 64px;
@@ -1394,6 +1400,10 @@ body.focus .view { padding-top: 64px; }
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           <span class="side-label">Settings</span>
         </button>
+        <button type="button" class="side-btn" id="install-side-btn" title="Install app">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <span class="side-label">Install app</span>
+        </button>
       </div>
     </aside>
     <main class="main">
@@ -1767,6 +1777,10 @@ body.focus .view { padding-top: 64px; }
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         Settings
       </button>
+      <button type="button" class="sheet-item" data-act="install">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        Install app
+      </button>
       <div class="sheet-div"></div>
       <button type="button" class="sheet-item" data-act="close" style="color:var(--text-3)">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -1802,7 +1816,13 @@ body.focus .view { padding-top: 64px; }
           <button type="button" class="btn" id="set-export-all" style="margin-bottom:8px;width:100%;">Export all data + email (JSON)</button>
           <button type="button" class="btn btn-danger" id="set-reset" style="width:100%;">Reset app &amp; show onboarding</button>
         </div>
-        <p style="color:var(--text-3);font-size:12px;margin-top:8px;">FlowPlanner v3 · Offline · No account · MIT</p>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line);">
+          <span style="font-size:11.5px;font-weight:650;color:var(--text-2);text-transform:uppercase;letter-spacing:.06em;">Install / home screen</span>
+          <p style="color:var(--text-3);font-size:12.5px;margin:6px 0 10px;">One HTML file — all data stays in your browser. Use your browser’s install or “Add to Home Screen” for an icon.</p>
+          <button type="button" class="btn btn-primary" id="install-app-btn" style="width:100%;">How to install</button>
+          <p style="color:var(--text-3);font-size:11.5px;margin-top:8px;line-height:1.45;">Chrome / Edge: menu → Install page. iPhone: Share → Add to Home Screen. Mac Safari: File → Add to Dock.</p>
+        </div>
+        <p style="color:var(--text-3);font-size:12px;margin-top:12px;">FlowPlanner v3 · Offline PWA · No account · MIT</p>
       </div>
       <div class="modal-f"><button type="button" class="btn btn-primary" id="settings-ok">Done</button></div>
     </div>
@@ -3110,7 +3130,7 @@ body.focus .view { padding-top: 64px; }
     ).join('') + '</div>';
 
     // Entity create/edit form (deal, contact, company, activity)
-    if (crmUI.form && ['deal','contact','company','activity','project','service'].includes(crmUI.form.kind)) {
+    if (crmUI.form && ['deal','contact','company','activity','project'].includes(crmUI.form.kind)) {
       h += renderEntityForm();
       root.innerHTML = h;
       return;
@@ -3602,16 +3622,16 @@ body.focus .view { padding-top: 64px; }
     if (crmUI.form && crmUI.form.kind === 'service') {
       const f = crmUI.form;
       return '<div class="crm-form-panel"><h3>' + esc(f.heading || 'Service') + '</h3><div class="crm-form">' +
-        '<label>Name<input id="svc-name" value="' + esc(f.name || '') + '"></label>' +
-        '<label>Price<input id="svc-price" type="number" step="0.01" min="0" value="' + esc(f.price != null ? f.price : '') + '"></label>' +
-        '<label>Est. hours<input id="svc-hours" type="number" step="0.5" min="0" value="' + esc(f.hours != null ? f.hours : '') + '"></label>' +
+        '<label>Name<input id="svc-name" value="' + esc(f.name || '') + '" placeholder="e.g. Landing page" autofocus></label>' +
+        '<label>Price<input id="svc-price" type="number" step="0.01" min="0" value="' + esc(f.price != null && f.price !== '' ? f.price : '') + '" placeholder="0"></label>' +
+        '<label>Est. hours<input id="svc-hours" type="number" step="0.5" min="0" value="' + esc(f.hours != null && f.hours !== '' ? f.hours : '') + '" placeholder="0"></label>' +
         '<label>Category<input id="svc-cat" value="' + esc(f.category || '') + '" placeholder="web, brand, retainer…"></label>' +
-        '<label class="wide">Description<textarea id="svc-desc" rows="2">' + esc(f.desc || '') + '</textarea></label>' +
-        '</div><div class="crm-sticky-actions"><button class="btn btn-primary" data-act="save-service">Save</button><button class="btn" data-act="cancel-form">Cancel</button></div></div>';
+        '<label class="wide">Description<textarea id="svc-desc" rows="2" placeholder="What is included">' + esc(f.desc || '') + '</textarea></label>' +
+        '</div><div class="crm-sticky-actions"><button type="button" class="btn btn-primary" data-act="save-service">Save service</button><button type="button" class="btn" data-act="cancel-form">Cancel</button></div></div>';
     }
     let h = '<div class="crm-bar"><button class="btn btn-primary" data-act="add-service">+ Service / package</button>';
     h += '<span class="sp"></span><span class="crm-note">Reusable packages. Apply to a new deal from the deal form (title/value).</span></div>';
-    const list = crm.services || [];
+    const list = Array.isArray(crm.services) ? crm.services : (crm.services = []);
     if (!list.length) return h + '<div class="crm-empty"><strong>No services yet</strong>Add landing pages, brand kits, retainers, etc.</div>';
     h += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px">';
     list.forEach(s => {
@@ -3968,7 +3988,7 @@ body.focus .view { padding-top: 64px; }
     });
     root.addEventListener('click', e => {
       const tab = e.target.closest('[data-tab]');
-      if (tab) { crmUI.tab = tab.dataset.tab; crmUI.selected = null; crmUI.selType = null; crmView(); return; }
+      if (tab) { crmUI.tab = tab.dataset.tab; crmUI.selected = null; crmUI.selType = null; crmUI.form = null; crmView(); return; }
       const b = e.target.closest('[data-act]'); if (!b) return;
       const a = b.dataset.act, id = b.dataset.id;
 
@@ -4231,6 +4251,7 @@ body.focus .view { padding-top: 64px; }
       } else if (a === 'add-project' || a === 'add-project-deal') {
         const dealId = id || '';
         const deal = dealId ? crm.deals.find(x => x.id === dealId) : null;
+        crmUI.tab = 'projects'; crmUI.selected = null; crmUI.selType = null;
         crmUI.form = { kind: 'project', heading: 'New project', id: null, name: deal ? deal.title : '', status: 'active', due: '', companyId: deal ? (deal.companyId || '') : '', dealId: dealId, checklist: ['Discovery', 'Design', 'Revisions', 'Handoff', 'Launch'], links: '', notes: '' };
         crmView();
       } else if (a === 'edit-project') {
@@ -4279,9 +4300,11 @@ body.focus .view { padding-top: 64px; }
         crm.deals.push(copy); crmLog('deal', copy.id, 'note', 'Duplicated from ' + d.id); crmSave();
         crmUI.selected = copy.id; crmUI.selType = 'deal'; crmUI.tab = 'deals'; crmView(); toast('Deal duplicated');
       } else if (a === 'add-service') {
+        crmUI.tab = 'services'; crmUI.selected = null; crmUI.selType = null;
         crmUI.form = { kind: 'service', heading: 'New service', id: null, name: '', price: '', hours: '', category: '', desc: '' }; crmView();
       } else if (a === 'edit-service') {
         const s = (crm.services || []).find(x => x.id === id); if (!s) return;
+        crmUI.tab = 'services'; crmUI.selected = null; crmUI.selType = null;
         crmUI.form = { kind: 'service', heading: 'Edit service', id: s.id, name: s.name, price: s.price, hours: s.hours, category: s.category || '', desc: s.desc || '' }; crmView();
       } else if (a === 'save-service') {
         const name = (document.getElementById('svc-name') || {}).value || '';
@@ -4293,14 +4316,15 @@ body.focus .view { padding-top: 64px; }
           category: ((document.getElementById('svc-cat') || {}).value || '').trim(),
           desc: ((document.getElementById('svc-desc') || {}).value || '').trim()
         };
-        if (!crm.services) crm.services = [];
+        if (!Array.isArray(crm.services)) crm.services = [];
         if (crmUI.form && crmUI.form.id) {
           const s = crm.services.find(x => x.id === crmUI.form.id);
           if (s) Object.assign(s, payload);
+          else crm.services.push(Object.assign({ id: crmUI.form.id }, payload));
         } else {
           crm.services.push(Object.assign({ id: uid() }, payload));
         }
-        crmUI.form = null; crmSave(); crmView(); toast('Service saved');
+        crmUI.form = null; crmUI.tab = 'services'; crmSave(); crmView(); toast('Service saved');
       } else if (a === 'del-service') {
         crm.services = (crm.services || []).filter(x => x.id !== id); crmSave(); crmView(); toast('Removed');
       } else if (a === 'use-service') {
@@ -5267,6 +5291,7 @@ body.focus .view { padding-top: 64px; }
         else if (act === 'theme') document.getElementById('theme-btn').click();
         else if (act === 'fs') toggleFullscreen();
         else if (act === 'settings') openSettings();
+        else if (act === 'install') { if (typeof installApp === 'function') installApp(); }
       });
     });
   }
@@ -5435,6 +5460,44 @@ body.focus .view { padding-top: 64px; }
       timeline();
     }
   }, 60000);
+  
+  // —— Install / home screen (single-file; no external service worker) ——
+  function isStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches || !!navigator.standalone;
+  }
+  async function installApp() {
+    if (isStandalone()) {
+      if (typeof toast === 'function') toast('Already running as an installed app');
+      return;
+    }
+    const ua = navigator.userAgent || '';
+    const isIOS = /iphone|ipad|ipod/i.test(ua);
+    const isMac = /macintosh/i.test(ua) && !isIOS;
+    const isChromium = !!(window.chrome || /edg\//i.test(ua) || /chromium/i.test(ua));
+    let msg = 'Add FlowPlanner as an app for a desktop or home-screen icon.\\n\\n';
+    if (isIOS) {
+      msg += 'iPhone / iPad (Safari):\\n1. Tap Share\\n2. “Add to Home Screen”\\n3. Tap Add';
+    } else if (isMac && /safari/i.test(ua) && !isChromium) {
+      msg += 'Mac Safari:\\nFile → Add to Dock\\n(or Share → Add to Dock)';
+    } else if (isChromium) {
+      msg += 'Chrome / Edge / Brave:\\n• Menu ⋮ → “Install FlowPlanner…” or “Save and share” → Install page\\n• Or use the install icon in the address bar\\n\\nTip: works best when opened via http://localhost (not a raw file:// path).';
+    } else {
+      msg += 'Use your browser menu:\\n“Install app”, “Add to Home Screen”, or “Create shortcut”.';
+    }
+    msg += '\\n\\nThis single file already stores all data offline in your browser.';
+    alert(msg);
+  }
+  const _installBtn = document.getElementById('install-app-btn');
+  if (_installBtn) {
+    _installBtn.style.display = '';
+    _installBtn.addEventListener('click', installApp);
+  }
+  const _installSide = document.getElementById('install-side-btn');
+  if (_installSide) {
+    _installSide.style.display = '';
+    _installSide.addEventListener('click', installApp);
+  }
+
 })();
   </script>
 </body>
